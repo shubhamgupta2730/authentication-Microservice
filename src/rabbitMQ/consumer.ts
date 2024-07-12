@@ -2,6 +2,8 @@ import amqp from 'amqplib/callback_api';
 import {
   sendOtp,
   verifyOtpForRegistration,
+  verifyOtpForLogin,
+  sendOtpToPhone,
 } from '../controllers/authController';
 import logger from '../logger';
 import { Request } from 'express';
@@ -13,6 +15,8 @@ export interface CustomRequest extends Request {
 }
 
 export interface CustomResponse {
+  statusCode?: number;
+
   status: (statusCode: number) => CustomResponse;
   json: (body: any) => CustomResponse;
 }
@@ -45,21 +49,24 @@ export const startConsumer = () => {
 
             try {
               const customResponse: CustomResponse = {
-                status: (statusCode: number) => customResponse,
-                json: (body: any) => {
+                status: function(statusCode: number) {
+                  this.statusCode = statusCode;
+                  return this;
+                },
+                json: function(body: any) {
                   logger.info(`Response body: ${JSON.stringify(body)}`);
-                  // Send response back to the replyTo queue
-                  if (replyTo) {
+                  
+                  if (replyTo && correlationId) {
                     channel.sendToQueue(
                       replyTo,
                       Buffer.from(JSON.stringify(body)),
-                      {
-                        correlationId,
-                      }
+                      { correlationId, contentType: 'application/json', headers: { statusCode: this.statusCode?.toString() } }
                     );
+                  } else {
+                    logger.warn('replyTo or correlationId not defined. Response not sent.');
                   }
-                  return customResponse;
-                },
+                  return this;
+                }
               };
 
               switch (messageContent.operation) {
@@ -69,10 +76,23 @@ export const startConsumer = () => {
                     customResponse
                   );
                   break;
+                case 'send_otp_phone':
+                  await sendOtpToPhone(
+                    { body: messageContent.data } as CustomRequest,
+                    customResponse
+                  );
+                  break;
                 case 'verify_otp':
                   await verifyOtpForRegistration(
                     { body: messageContent.data } as CustomRequest,
                     customResponse
+                  );
+                  break;
+                case 'verify_login_otp':
+                  await verifyOtpForLogin(
+                    { body: messageContent.data } as CustomRequest,
+                    customResponse,
+                    messageContent.data
                   );
                   break;
                 default:

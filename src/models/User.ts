@@ -8,8 +8,9 @@ export interface IUser extends Document {
   isActive?: boolean; //for blocking and unblocking purpose.
   isVerified?: boolean; //for verificaton
   otp?: string;
-  twoFactorAuthType?: 'email' | 'phone' | 'authenticator';
-  twoFactorAuthSecret?: string;
+  authMethod?: 'email' | 'phone' | 'authenticator';
+  totpSecret?: string;
+  _id: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -22,11 +23,12 @@ const userSchema = new Schema<IUser>({
   otp: {
     type: String,
   },
-  twoFactorAuthType: {
+  authMethod: {
     type: String,
     enum: ['email', 'phone', 'authenticator'],
+    default: ' email ',
   },
-  twoFactorAuthSecret: { type: String },
+  totpSecret: { type: String },
 });
 
 export default model<IUser>('User', userSchema);
