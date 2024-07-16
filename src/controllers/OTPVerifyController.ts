@@ -9,7 +9,7 @@ import {
 export const verifyOTPController = async (req: Request, res: Response) => {
   const { userId, otp, emailOtp, phoneOtp } = req.body;
 
-  if (!userId ) {
+  if (!userId) {
     return res.status(400).json({
       message: 'Enter all the fields.',
     });
@@ -23,7 +23,7 @@ export const verifyOTPController = async (req: Request, res: Response) => {
 
     let isVerified = false;
     let message = '';
-    let type:string | undefined = '' ;
+    let type: string | undefined = '';
 
     if (emailOtp) {
       isVerified = await verifyEmailOTP(user.email, emailOtp);
@@ -34,7 +34,6 @@ export const verifyOTPController = async (req: Request, res: Response) => {
       message = 'Phone OTP';
       type = 'phone';
     } else {
-     
       type = user.twoFactorMethod;
       switch (type) {
         case 'email':
@@ -55,12 +54,16 @@ export const verifyOTPController = async (req: Request, res: Response) => {
           message = 'Authenticator App OTP';
           break;
         default:
-          return res.status(400).json({ message: 'Invalid OTP verification type.' });
+          return res
+            .status(400)
+            .json({ message: 'Invalid OTP verification type.' });
       }
     }
 
     if (!isVerified) {
-      return res.status(400).json({ message: `Invalid ${message} or credentials.` });
+      return res
+        .status(400)
+        .json({ message: `Invalid ${message} or credentials.` });
     }
 
     // Remove OTP from database based on verification type

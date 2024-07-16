@@ -12,7 +12,9 @@ export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+    return res
+      .status(400)
+      .json({ message: 'Email and password are required.' });
   }
 
   try {
@@ -27,11 +29,15 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     if (!user.isEmailVerified) {
-      return res.status(400).json({ message: 'Please verify your email first.' });
+      return res
+        .status(400)
+        .json({ message: 'Please verify your email first.' });
     }
 
     if (!user.isPhoneVerified) {
-      return res.status(400).json({ message: 'Please verify your phone number first.' });
+      return res
+        .status(400)
+        .json({ message: 'Please verify your phone number first.' });
     }
 
     // Checking if 2FA is enabled
@@ -44,7 +50,8 @@ export const loginController = async (req: Request, res: Response) => {
           user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
           await user.save();
           return res.status(200).json({
-            message: 'Two-factor authentication required. Use email OTP to verify.',
+            message:
+              'Two-factor authentication required. Use email OTP to verify.',
             method: 'email',
             userId: user._id,
           });
@@ -55,19 +62,22 @@ export const loginController = async (req: Request, res: Response) => {
           user.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
           await user.save();
           return res.status(200).json({
-            message: 'Two-factor authentication required. Use phone OTP to verify.',
+            message:
+              'Two-factor authentication required. Use phone OTP to verify.',
             method: 'phone',
             userId: user._id,
           });
 
         case 'authenticator':
-          const authSecret = user.twoFactorSecret || generateAuthenticatorSecret();
+          const authSecret =
+            user.twoFactorSecret || generateAuthenticatorSecret();
           if (!user.twoFactorSecret) {
             user.twoFactorSecret = authSecret;
             await user.save();
           }
           return res.status(200).json({
-            message: 'Two-factor authentication required. Use authenticator app OTP to verify.',
+            message:
+              'Two-factor authentication required. Use authenticator app OTP to verify.',
             method: 'authenticator',
             userId: user._id,
             authSecret,
