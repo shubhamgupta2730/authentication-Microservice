@@ -30,6 +30,23 @@ export const generateOTP = (length: number): string => {
 
 //*--------------------Generate OTP-------------------------//
 
+//! sending  reset password link to mail:
+
+export const sendResetPasswordLinkToMail = async (
+  email: string,
+  text: string,
+  subject: string
+) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER || '',
+    to: email,
+    subject: subject,
+    text: text,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
 //! Generate and send OTP via email:
 
 export const generateEmailOTP = async (email: string): Promise<string> => {
@@ -48,10 +65,13 @@ export const generateEmailOTP = async (email: string): Promise<string> => {
 
 //! Generate and send OTP via phone:
 
-export const generatePhoneOTP = async (to: string): Promise<string> => {
+export const generatePhoneOTP = async (
+  countryCode: string,
+  to: string
+): Promise<string> => {
   const otp = generateOTP(6);
 
-  const formattedPhone = `+91${to}`;
+  const formattedPhone = `${countryCode}${to}`;
 
   try {
     await twilioClient.messages.create({

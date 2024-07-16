@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import Auth from '../models/AuthModel';
+import Auth from '../../../models/AuthModel';
+import { generateToken } from '../../../utils/generateToken';
 import {
   verifyEmailOTP,
   verifyPhoneOTP,
   verifyAuthenticatorOTP,
-} from '../services/otpService';
+} from '../../../services/otpService';
 
 export const verifyOTPController = async (req: Request, res: Response) => {
   const { userId, otp, emailOtp, phoneOtp } = req.body;
@@ -24,6 +25,7 @@ export const verifyOTPController = async (req: Request, res: Response) => {
     let isVerified = false;
     let message = '';
     let type: string | undefined = '';
+    let token: string | undefined;
 
     if (emailOtp) {
       isVerified = await verifyEmailOTP(user.email, emailOtp);
@@ -81,7 +83,11 @@ export const verifyOTPController = async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.status(200).json({ message: `${message} verified successfully.` });
+    token = generateToken(userId);
+
+    res
+      .status(200)
+      .json({ message: `${message} verified successfully.`, token });
   } catch (error) {
     console.error(`Error verifying OTP:`, error);
     res.status(500).json({ message: `Failed to verify OTP.` });

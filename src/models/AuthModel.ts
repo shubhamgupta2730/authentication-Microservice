@@ -5,6 +5,7 @@ export interface IAuth extends Document {
   password: string;
   name: string;
   phone: string;
+  countryCode: string;
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
   emailOtp?: string;
@@ -15,6 +16,8 @@ export interface IAuth extends Document {
   twoFactorEnabled: boolean;
   isAuthenticatorVerified?: boolean;
   authenticatorSecret?: string;
+  resetToken?: string;
+  resetTokenExpires?: Date;
   twoFactorMethod?: 'email' | 'phone' | 'authenticator';
 }
 
@@ -33,9 +36,14 @@ const AuthSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    countryCode: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: String,
       required: true,
+      unique: true,
     },
     isEmailVerified: {
       type: Boolean,
@@ -74,6 +82,12 @@ const AuthSchema: Schema = new Schema(
     twoFactorMethod: {
       type: String,
       enum: ['email', 'phone', 'authenticator'],
+    },
+    resetToken: {
+      type: String,
+    },
+    resetTokenExpires: {
+      type: String,
     },
   },
   {

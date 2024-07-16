@@ -1,16 +1,15 @@
-// authController.ts
 import { Request, Response } from 'express';
-import Auth from '../models/AuthModel';
+import Auth from '../../../models/AuthModel';
 
 export const updateAuthenticationMethod = async (
   req: Request,
   res: Response
 ) => {
-  const { userId, twoFactorMethod } = req.body;
+  const { userId, twoFactorMethod, twoFactorEnabled } = req.body;
 
   const allowedMethods = ['email', 'phone', 'authenticator'];
 
-  if (!userId || !twoFactorMethod) {
+  if (!userId || !twoFactorMethod || !twoFactorEnabled) {
     return res
       .status(400)
       .json({ message: 'User ID and Two-Factor Method are required.' });
@@ -29,6 +28,7 @@ export const updateAuthenticationMethod = async (
     }
 
     user.twoFactorMethod = twoFactorMethod;
+    user.twoFactorEnabled = twoFactorEnabled;
     await user.save();
 
     res.status(200).json({

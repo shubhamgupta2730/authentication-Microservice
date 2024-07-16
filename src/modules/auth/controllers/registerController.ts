@@ -1,14 +1,16 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import Auth, { IAuth } from '../models/AuthModel';
-import { generateEmailOTP, generatePhoneOTP } from '../services/otpService';
+import Auth, { IAuth } from '../../../models/AuthModel';
+import {
+  generateEmailOTP,
+  generatePhoneOTP,
+} from '../../../services/otpService';
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { email, password, name, phone } = req.body;
+  const { email, password, name, countryCode, phone } = req.body;
 
   try {
-    if (!email || !password || !name || !phone) {
+    if (!email || !password || !name || !phone || !countryCode) {
       return res.status(400).send({ message: 'All fields are required.' });
     }
 
@@ -23,7 +25,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     // Generate OTP
     const emailOtp = await generateEmailOTP(email);
-    const phoneOtp = await generatePhoneOTP(phone);
+    const phoneOtp = await generatePhoneOTP(countryCode, phone);
 
     const newUser: IAuth = new Auth({
       email,
@@ -32,23 +34,15 @@ export const registerUser = async (req: Request, res: Response) => {
       phone,
       emailOtp,
       phoneOtp,
+      countryCode,
       emailOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
       phoneOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
     });
 
     await newUser.save();
 
-    const token = jwt.sign(
-      { userId: newUser._id },
-      process.env.JWT_SECRET || '',
-      {
-        expiresIn: '1h',
-      }
-    );
-
     res.status(201).json({
       userId: newUser._id,
-      token,
       message:
         'User registered successfully. Please verify the Email and Phone Number.',
     });

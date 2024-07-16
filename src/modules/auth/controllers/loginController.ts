@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import Auth from '../models/AuthModel';
+import Auth from '../../../models/AuthModel';
 import {
   generateEmailOTP,
   generatePhoneOTP,
   generateAuthenticatorSecret,
-} from '../services/otpService';
+} from '../../../services/otpService';
 
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -57,7 +57,7 @@ export const loginController = async (req: Request, res: Response) => {
           });
 
         case 'phone':
-          otp = await generatePhoneOTP(user.phone);
+          otp = await generatePhoneOTP(user.countryCode, user.phone);
           user.phoneOtp = otp;
           user.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
           await user.save();
