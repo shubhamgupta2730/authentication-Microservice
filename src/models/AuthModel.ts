@@ -22,7 +22,6 @@ export interface IAuth extends Document {
   tempPhone?: string;
   isTempMailVerified: boolean;
   isTempPhoneVerified: boolean;
-
 }
 
 const AuthSchema: Schema = new Schema(

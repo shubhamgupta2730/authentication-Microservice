@@ -23,7 +23,7 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
     }
 
     user.tempPhone = phone;
-    user.isTempPhoneVerified =  false;
+    user.isTempPhoneVerified = false;
     user.countryCode = countryCode;
     const otp = await generatePhoneOTP(user.countryCode, user.phone);
     user.phoneOtp = otp;
@@ -32,7 +32,8 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
     // await verifyPhoneOTP(phone, otp);
 
     res.status(200).json({
-      message: 'Phone number updated Request successful.Please verify Phone number.',
+      message:
+        'Phone number updated Request successful.Please verify Phone number.',
     });
   } catch (error) {
     console.error('Error updating phone number:', error);

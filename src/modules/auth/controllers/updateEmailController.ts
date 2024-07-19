@@ -21,7 +21,7 @@ export const updateEmail = async (req: Request, res: Response) => {
     }
 
     user.tempMail = email;
-    user.isTempMailVerified =  false;
+    user.isTempMailVerified = false;
     const otp = await generateEmailOTP(email);
     user.emailOtp = otp;
     user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
