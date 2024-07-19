@@ -8,7 +8,7 @@ import {
   generateAuthenticatorSecret,
 } from '../../../services/otpService';
 
-export const loginController = async (req: Request, res: Response) => {
+export const signIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -92,9 +92,9 @@ export const loginController = async (req: Request, res: Response) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || '', {
       expiresIn: '1h',
     });
-    res.status(200).json({ message: 'Login successful.', token });
+    res.status(200).json({ message: 'SignIn successful.', token });
   } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ message: 'Failed to login.' });
+    console.error('Error during signIn:', error);
+    res.status(500).json({ message: 'Failed to SignIn.' });
   }
 };

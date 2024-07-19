@@ -1,20 +1,30 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import Auth, { IAuth } from '../../../models/AuthModel';
+import User, { IUser } from '../../../models/userModel';
 import {
   generateEmailOTP,
   generatePhoneOTP,
 } from '../../../services/otpService';
 
-export const registerUser = async (req: Request, res: Response) => {
-  const { email, password, name, countryCode, phone } = req.body;
+export const signup = async (req: Request, res: Response) => {
+  const {
+    email,
+    password,
+    userName,
+    countryCode,
+    phone,
+    gender,
+    dob,
+    address,
+  } = req.body;
 
   try {
-    if (!email || !password || !name || !phone || !countryCode) {
+    if (!email || !password || !userName || !phone || !countryCode) {
       return res.status(400).send({ message: 'All fields are required.' });
     }
 
-    const existingUser = await Auth.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
         .status(400)
@@ -27,10 +37,9 @@ export const registerUser = async (req: Request, res: Response) => {
     const emailOtp = await generateEmailOTP(email);
     const phoneOtp = await generatePhoneOTP(countryCode, phone);
 
-    const newUser: IAuth = new Auth({
+    const newAuth: IAuth = new Auth({
       email,
       password: hashedPassword,
-      name,
       phone,
       emailOtp,
       phoneOtp,
@@ -39,15 +48,23 @@ export const registerUser = async (req: Request, res: Response) => {
       phoneOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
     });
 
+    await newAuth.save();
+
+    const newUser: IUser = new User({
+      authId: newAuth._id,
+      userName,
+      gender,
+      dob,
+      address,
+    });
     await newUser.save();
 
     res.status(201).json({
-      userId: newUser._id,
-      message:
-        'User registered successfully. Please verify the Email and Phone Number.',
+      userId: newAuth._id,
+      message: 'Signup successful. Please verify the Email and Phone Number.',
     });
   } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).send({ message: 'Failed to register user.' });
+    console.error('Error in Signup:', error);
+    res.status(500).send({ message: 'Failed to Signup.' });
   }
 };

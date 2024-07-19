@@ -22,9 +22,9 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    user.phone = phone;
+    user.tempPhone = phone;
+    user.isTempPhoneVerified =  false;
     user.countryCode = countryCode;
-    user.isPhoneVerified = false;
     const otp = await generatePhoneOTP(user.countryCode, user.phone);
     user.phoneOtp = otp;
     user.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
@@ -32,7 +32,7 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
     // await verifyPhoneOTP(phone, otp);
 
     res.status(200).json({
-      message: 'Phone number updated successfully.Please verify Phone number.',
+      message: 'Phone number updated Request successful.Please verify Phone number.',
     });
   } catch (error) {
     console.error('Error updating phone number:', error);

@@ -2,10 +2,9 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IAuth extends Document {
   email: string;
-  password: string;
-  name: string;
   phone: string;
   countryCode: string;
+  password: string;
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
   emailOtp?: string;
@@ -19,6 +18,11 @@ export interface IAuth extends Document {
   resetToken?: string;
   resetTokenExpires?: Date;
   twoFactorMethod?: 'email' | 'phone' | 'authenticator';
+  tempMail?: string;
+  tempPhone?: string;
+  isTempMailVerified: boolean;
+  isTempPhoneVerified: boolean;
+
 }
 
 const AuthSchema: Schema = new Schema(
@@ -28,22 +32,18 @@ const AuthSchema: Schema = new Schema(
       required: true,
       unique: true,
     },
-    password: {
+    phone: {
       type: String,
       required: true,
-    },
-    name: {
-      type: String,
-      required: true,
+      unique: true,
     },
     countryCode: {
       type: String,
       required: true,
     },
-    phone: {
+    password: {
       type: String,
       required: true,
-      unique: true,
     },
     isEmailVerified: {
       type: Boolean,
@@ -79,17 +79,32 @@ const AuthSchema: Schema = new Schema(
     authenticatorSecret: {
       type: String,
     },
-    twoFactorMethod: {
-      type: String,
-      enum: ['email', 'phone', 'authenticator'],
-    },
     resetToken: {
       type: String,
     },
     resetTokenExpires: {
+      type: Date,
+    },
+    twoFactorMethod: {
+      type: String,
+      enum: ['email', 'phone', 'authenticator'],
+    },
+    tempMail: {
       type: String,
     },
+    tempPhone: {
+      type: String,
+    },
+    isTempMailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isTempPhoneVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   {
     timestamps: true,
   }

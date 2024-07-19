@@ -113,7 +113,14 @@ export const verifyEmailOTP = async (
     }
 
     // Update email verification status
+    user.isTempMailVerified = true;
     user.isEmailVerified = true;
+
+    if (user.tempMail && user.isTempMailVerified) {
+      user.email = user.tempMail;
+      user.tempMail = undefined;
+    }
+    user.emailOtp = undefined;
     await user.save();
 
     return true;
@@ -140,6 +147,12 @@ export const verifyPhoneOTP = async (
     }
 
     user.isPhoneVerified = true;
+    user.isTempPhoneVerified = true;
+    if (user.tempPhone && user.isTempPhoneVerified) {
+      user.phone = user.tempPhone;
+      user.tempPhone = undefined;
+    }
+    user.phoneOtp = undefined;
     await user.save();
 
     return true;

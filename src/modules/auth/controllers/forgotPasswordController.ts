@@ -1,38 +1,42 @@
 import { Request, Response } from 'express';
 import Auth from '../../../models/AuthModel';
-import bcrypt from 'bcrypt';
+import { sendResetPasswordLinkToMail } from '../../../services/otpService';
+import crypto from 'crypto';
 
-export const resetPassword = async (req: Request, res: Response) => {
-  const { token } = req.query;
-  const { newPassword } = req.body;
+const generateResetToken = (): string => {
+  return crypto.randomBytes(32).toString('hex');
+};
 
-  if (!token || !newPassword) {
-    return res
-      .status(400)
-      .json({ message: 'Token and new password are required.' });
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
   }
 
   try {
-    const user = await Auth.findOne({
-      resetToken: token.toString(),
-      resetTokenExpires: { $gt: Date.now() },
-    });
-
+    const user = await Auth.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token.' });
+      return res.status(404).json({ message: 'User not found.' });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    user.password = hashedPassword;
-    user.resetToken = undefined;
-    user.resetTokenExpires = undefined;
-
+    const resetToken = generateResetToken();
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.resetToken = hashedToken;
+    user.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
 
-    res.status(200).json({ message: 'Password reset successful.' });
+    const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${resetToken}`;
+    const mailSubject = 'Password Reset Link';
+    const mailText = `Click the following link to reset your password: ${resetLink}`;
+
+    await sendResetPasswordLinkToMail(email, mailText, mailSubject);
+
+    res
+      .status(200)
+      .json({ message: 'Password reset link sent to your email.' });
   } catch (error) {
-    console.error('Error resetting password:', error);
-    res.status(500).json({ message: 'Failed to reset password.' });
+    console.error('Error sending reset password link:', error);
+    res.status(500).json({ message: 'Failed to send reset password link.' });
   }
 };

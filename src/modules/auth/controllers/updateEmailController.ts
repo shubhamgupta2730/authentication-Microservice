@@ -20,8 +20,8 @@ export const updateEmail = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    user.email = email;
-    user.isEmailVerified = false;
+    user.tempMail = email;
+    user.isTempMailVerified =  false;
     const otp = await generateEmailOTP(email);
     user.emailOtp = otp;
     user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
