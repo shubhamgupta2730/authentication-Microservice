@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Auth from '../../../models/AuthModel';
+import Otp from '../../../models/OtpModel';
 import { sendResetPasswordLinkToMail } from '../../../services/otpService';
 import crypto from 'crypto';
 
@@ -20,13 +21,19 @@ export const forgotPassword = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return res.status(404).json({ message: 'otp records not found' });
+    }
+
     const resetToken = generateResetToken();
     const hashedToken = crypto
       .createHash('sha256')
       .update(resetToken)
       .digest('hex');
-    user.resetToken = hashedToken;
-    user.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+    otpRecord.resetToken = hashedToken;
+    otpRecord.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+    otpRecord.save();
     await user.save();
 
     const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${resetToken}`;

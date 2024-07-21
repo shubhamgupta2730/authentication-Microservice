@@ -2,8 +2,8 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IUser extends Document {
   authId: Schema.Types.ObjectId;
-  userName: string;
-  address: string;
+  firstName: string;
+  lastName: string;
   dob: Date | null;
   gender: string;
 }
@@ -15,11 +15,11 @@ const UserSchema: Schema<IUser> = new Schema(
       ref: 'Auth',
       required: true,
     },
-    userName: {
+    firstName: {
       type: String,
       required: true,
     },
-    address: {
+    lastName: {
       type: String,
       required: true,
     },

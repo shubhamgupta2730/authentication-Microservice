@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import Auth, { IAuth } from '../../../models/AuthModel';
 import User, { IUser } from '../../../models/userModel';
+import Otp, { IOtp } from '../../../models/OtpModel';
 import {
   generateEmailOTP,
   generatePhoneOTP,
@@ -11,24 +12,48 @@ export const signup = async (req: Request, res: Response) => {
   const {
     email,
     password,
-    userName,
     countryCode,
     phone,
+    firstName,
+    lastName,
     gender,
     dob,
-    address,
+    role,
   } = req.body;
 
   try {
-    if (!email || !password || !userName || !phone || !countryCode) {
+    if (
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !phone ||
+      !countryCode ||
+      !gender ||
+      !dob ||
+      !role
+    ) {
       return res.status(400).send({ message: 'All fields are required.' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await Auth.findOne({ $or: [{ email }, { phone }] });
     if (existingUser) {
       return res
         .status(400)
-        .send({ message: 'User with this email already exists.' });
+        .send({ message: 'Email or phone already in use.' });
+    }
+
+    if (!['male', 'female', 'other'].includes(gender)) {
+      return res.status(400).send({ message: 'Invalid gender.' });
+    }
+
+    const dobDate = new Date(dob);
+    if (isNaN(dobDate.getTime()) || dobDate >= new Date()) {
+      return res.status(400).send({ message: 'Invalid date of birth.' });
+    }
+
+    if (!['user', 'seller'].includes(role)) {
+      return res.status(400).send({ message: 'Invalid role.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,27 +66,34 @@ export const signup = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       phone,
-      emailOtp,
-      phoneOtp,
       countryCode,
-      emailOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
-      phoneOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
+      role,
     });
 
     await newAuth.save();
 
     const newUser: IUser = new User({
       authId: newAuth._id,
-      userName,
+      firstName,
+      lastName,
       gender,
       dob,
-      address,
     });
     await newUser.save();
 
+    const newOtp: IOtp = new Otp({
+      authId: newAuth._id,
+      emailOtp,
+      phoneOtp,
+      emailOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
+      phoneOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    await newOtp.save();
+
     res.status(201).json({
       userId: newAuth._id,
-      message: 'Signup successful. Please verify the Email and Phone Number.',
+      message:
+        'Signup request successful. Please verify the Email and Phone Number.',
     });
   } catch (error) {
     console.error('Error in Signup:', error);

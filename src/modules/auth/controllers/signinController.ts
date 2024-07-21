@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Auth from '../../../models/AuthModel';
+import Otp from '../../../models/OtpModel';
 import {
   generateEmailOTP,
   generatePhoneOTP,
@@ -21,6 +22,11 @@ export const signIn = async (req: Request, res: Response) => {
     const user = await Auth.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return false;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -46,8 +52,9 @@ export const signIn = async (req: Request, res: Response) => {
       switch (user.twoFactorMethod) {
         case 'email':
           otp = await generateEmailOTP(user.email);
-          user.emailOtp = otp;
-          user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
+          otpRecord.emailOtp = otp;
+          otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+          await otpRecord.save(); // OTP valid for 10 minutes
           await user.save();
           return res.status(200).json({
             message:
@@ -58,8 +65,9 @@ export const signIn = async (req: Request, res: Response) => {
 
         case 'phone':
           otp = await generatePhoneOTP(user.countryCode, user.phone);
-          user.phoneOtp = otp;
-          user.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+          otpRecord.phoneOtp = otp;
+          otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+          await otpRecord.save();
           await user.save();
           return res.status(200).json({
             message:
@@ -70,9 +78,10 @@ export const signIn = async (req: Request, res: Response) => {
 
         case 'authenticator':
           const authSecret =
-            user.twoFactorSecret || generateAuthenticatorSecret();
-          if (!user.twoFactorSecret) {
-            user.twoFactorSecret = authSecret;
+            otpRecord.twoFactorSecret || generateAuthenticatorSecret();
+          if (!otpRecord.twoFactorSecret) {
+            otpRecord.twoFactorSecret = authSecret;
+            await otpRecord.save();
             await user.save();
           }
           return res.status(200).json({

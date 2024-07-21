@@ -1,20 +1,29 @@
 import { Request, Response } from 'express';
-import UserProfile from '../../../models/userModel';
+import User from '../../../models/userModel';
 
 export const updateProfile = async (req: Request, res: Response) => {
   const userId = (req as any).userId;
-  const { username, address, dob, gender } = req.body;
+  const { firstName, lastName, dob, gender } = req.body;
 
   try {
-    const userProfile = await UserProfile.findOneAndUpdate(
+    const userProfile = await User.findOneAndUpdate(
       { authId: userId },
-      { username, address, dob, gender },
+      { firstName, lastName, dob, gender },
       { new: true, runValidators: true, upsert: true }
     );
 
+    if (!['male', 'female', 'other'].includes(gender)) {
+      return res.status(400).send({ message: 'Invalid gender.' });
+    }
+
+    const dobDate = new Date(dob);
+    if (isNaN(dobDate.getTime()) || dobDate >= new Date()) {
+      return res.status(400).send({ message: 'Invalid date of birth.' });
+    }
+
     const user = {
-      userName: userProfile.userName,
-      address: userProfile.address,
+      firstName: userProfile.firstName,
+      lastName: userProfile.lastName,
       dob: userProfile.dob,
       gender: userProfile.gender,
     };

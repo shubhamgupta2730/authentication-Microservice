@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Auth from '../../../models/AuthModel';
+import Otp from '../../../models/OtpModel';
 import { generateEmailOTP } from '../../../services/otpService';
 
 export const updateEmail = async (req: Request, res: Response) => {
@@ -20,11 +21,17 @@ export const updateEmail = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    user.tempMail = email;
-    user.isTempMailVerified = false;
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return res.status(404).json({ message: 'otp record not found.' });
+    }
+
+    otpRecord.tempMail = email;
+    otpRecord.isTempMailVerified = false;
     const otp = await generateEmailOTP(email);
-    user.emailOtp = otp;
-    user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    otpRecord.emailOtp = otp;
+    otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await otpRecord.save();
     await user.save();
 
     res

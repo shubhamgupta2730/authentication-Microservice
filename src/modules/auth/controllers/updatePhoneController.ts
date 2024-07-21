@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Auth from '../../../models/AuthModel';
+import Otp from '../../../models/OtpModel';
 import { generatePhoneOTP } from '../../../services/otpService';
 
 export const updatePhoneNumber = async (req: Request, res: Response) => {
@@ -22,12 +23,22 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    user.tempPhone = phone;
-    user.isTempPhoneVerified = false;
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return res.status(404).json({ message: 'otp record not found.' });
+    }
+
+    if (!phone || typeof phone !== 'string') {
+      return res.status(400).json({ message: 'Invalid phone number.' });
+    }
+
+    otpRecord.tempPhone = phone;
+    otpRecord.isTempPhoneVerified = false;
     user.countryCode = countryCode;
-    const otp = await generatePhoneOTP(user.countryCode, user.phone);
-    user.phoneOtp = otp;
-    user.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    const otp = await generatePhoneOTP(user.countryCode, otpRecord.tempPhone);
+    otpRecord.phoneOtp = otp;
+    otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await otpRecord.save();
     await user.save();
     // await verifyPhoneOTP(phone, otp);
 

@@ -7,24 +7,12 @@ export interface IAuth extends Document {
   password: string;
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
-  emailOtp?: string;
-  emailOtpExpires?: Date;
-  phoneOtp?: string;
-  phoneOtpExpires?: Date;
-  twoFactorSecret?: string;
   twoFactorEnabled: boolean;
-  isAuthenticatorVerified?: boolean;
-  authenticatorSecret?: string;
-  resetToken?: string;
-  resetTokenExpires?: Date;
   twoFactorMethod?: 'email' | 'phone' | 'authenticator';
-  tempMail?: string;
-  tempPhone?: string;
-  isTempMailVerified: boolean;
-  isTempPhoneVerified: boolean;
+  role: 'user' | 'seller';
 }
 
-const AuthSchema: Schema = new Schema(
+const AuthSchema: Schema<IAuth> = new Schema(
   {
     email: {
       type: String,
@@ -52,58 +40,21 @@ const AuthSchema: Schema = new Schema(
       type: Boolean,
       default: false,
     },
-    emailOtp: {
-      type: String,
-    },
-    emailOtpExpires: {
-      type: Date,
-    },
-    phoneOtp: {
-      type: String,
-    },
-    phoneOtpExpires: {
-      type: Date,
-    },
-    twoFactorSecret: {
-      type: String,
-    },
     twoFactorEnabled: {
       type: Boolean,
       default: false,
-    },
-    isAuthenticatorVerified: {
-      type: Boolean,
-      default: false,
-    },
-    authenticatorSecret: {
-      type: String,
-    },
-    resetToken: {
-      type: String,
-    },
-    resetTokenExpires: {
-      type: Date,
     },
     twoFactorMethod: {
       type: String,
       enum: ['email', 'phone', 'authenticator'],
     },
-    tempMail: {
+    role: {
       type: String,
-    },
-    tempPhone: {
-      type: String,
-    },
-    isTempMailVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isTempPhoneVerified: {
-      type: Boolean,
-      default: false,
+      enum: ['user', 'seller'],
+      required: true,
+      default: 'user',
     },
   },
-
   {
     timestamps: true,
   }

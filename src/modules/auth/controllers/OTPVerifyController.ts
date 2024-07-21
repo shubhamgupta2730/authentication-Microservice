@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Auth from '../../../models/AuthModel';
+import Otp from '../../../models/OtpModel';
 import { generateToken } from '../../../utils/generateToken';
 import {
   verifyEmailOTP,
@@ -20,6 +21,11 @@ export const verifyOTPController = async (req: Request, res: Response) => {
     const user = await Auth.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const otpRecord = await Otp.findOne({ authId: userId });
+    if (!otpRecord) {
+      return res.status(404).json({ message: 'OTP record not found.' });
     }
 
     let isVerified = false;
@@ -47,12 +53,12 @@ export const verifyOTPController = async (req: Request, res: Response) => {
           message = 'Phone OTP';
           break;
         case 'authenticator':
-          if (!user.twoFactorSecret) {
+          if (!otpRecord.twoFactorSecret) {
             return res.status(400).json({
               message: 'User does not have an authenticator secret set up.',
             });
           }
-          isVerified = verifyAuthenticatorOTP(otp, user.twoFactorSecret);
+          isVerified = verifyAuthenticatorOTP(otp, otpRecord.twoFactorSecret);
           message = 'Authenticator App OTP';
           break;
         default:
@@ -70,17 +76,16 @@ export const verifyOTPController = async (req: Request, res: Response) => {
 
     // Remove OTP from database based on verification type
     if (type === 'email') {
-      user.emailOtp = undefined;
-      user.emailOtpExpires = undefined;
+      otpRecord.emailOtp = undefined;
+      otpRecord.emailOtpExpires = undefined;
       user.isEmailVerified = true;
     } else if (type === 'phone') {
-      user.phoneOtp = undefined;
-      user.phoneOtpExpires = undefined;
+      otpRecord.phoneOtp = undefined;
+      otpRecord.phoneOtpExpires = undefined;
       user.isPhoneVerified = true;
-    } else if (type === 'authenticator') {
-      user.isAuthenticatorVerified = true;
     }
 
+    await otpRecord.save();
     await user.save();
 
     token = generateToken(userId);

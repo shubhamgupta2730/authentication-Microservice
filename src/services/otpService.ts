@@ -3,6 +3,7 @@ import twilio from 'twilio';
 import speakeasy from 'speakeasy';
 import { totp } from 'speakeasy';
 import Auth from '../models/AuthModel';
+import Otp from '../models/OtpModel';
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID || '',
@@ -71,7 +72,7 @@ export const generatePhoneOTP = async (
 ): Promise<string> => {
   const otp = generateOTP(6);
 
-  const formattedPhone = `${countryCode}${to}`;
+    const formattedPhone = `${countryCode}${to}`;
 
   try {
     await twilioClient.messages.create({
@@ -107,20 +108,25 @@ export const verifyEmailOTP = async (
     if (!user) {
       return false;
     }
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return false;
+    }
 
-    if (otp !== user.emailOtp) {
+    if (otp !== otpRecord.emailOtp) {
       return false;
     }
 
     // Update email verification status
-    user.isTempMailVerified = true;
+    otpRecord.isTempMailVerified = true;
     user.isEmailVerified = true;
 
-    if (user.tempMail && user.isTempMailVerified) {
-      user.email = user.tempMail;
-      user.tempMail = undefined;
+    if (otpRecord.tempMail && otpRecord.isTempMailVerified) {
+      user.email = otpRecord.tempMail;
+      otpRecord.tempMail = undefined;
     }
-    user.emailOtp = undefined;
+    otpRecord.emailOtp = undefined;
+    await otpRecord.save();
     await user.save();
 
     return true;
@@ -142,17 +148,23 @@ export const verifyPhoneOTP = async (
       return false;
     }
 
-    if (otp !== user.phoneOtp) {
+    const otpRecord = await Otp.findOne({ authId: user._id });
+    if (!otpRecord) {
+      return false;
+    }
+
+    if (otp !== otpRecord.phoneOtp) {
       return false;
     }
 
     user.isPhoneVerified = true;
-    user.isTempPhoneVerified = true;
-    if (user.tempPhone && user.isTempPhoneVerified) {
-      user.phone = user.tempPhone;
-      user.tempPhone = undefined;
+    otpRecord.isTempPhoneVerified = true;
+    if (otpRecord.tempPhone && otpRecord.isTempPhoneVerified) {
+      user.phone = otpRecord.tempPhone;
+      otpRecord.tempPhone = undefined;
     }
-    user.phoneOtp = undefined;
+    otpRecord.phoneOtp = undefined;
+    await otpRecord.save();
     await user.save();
 
     return true;
