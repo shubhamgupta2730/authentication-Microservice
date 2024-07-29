@@ -1,0 +1,34 @@
+2024-07-29 16:16:07 info: Server is running on http://localhost:3000
+2024-07-29 16:16:23 info: MongoDB connected
+2024-07-29 16:16:36 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:37 info: ::1 - - [29/Jul/2024:10:46:37 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:37 info: Response status: 400 - Response time: 310.89ms
+2024-07-29 16:16:40 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:41 info: ::1 - - [29/Jul/2024:10:46:41 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:41 info: Response status: 400 - Response time: 193.57ms
+2024-07-29 16:16:43 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:44 info: ::1 - - [29/Jul/2024:10:46:44 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:44 info: Response status: 400 - Response time: 364.95ms
+2024-07-29 16:16:45 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:45 info: ::1 - - [29/Jul/2024:10:46:45 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:45 info: Response status: 400 - Response time: 166.97ms
+2024-07-29 16:16:46 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:47 info: ::1 - - [29/Jul/2024:10:46:47 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:47 info: Response status: 400 - Response time: 264.85ms
+2024-07-29 16:16:47 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:16:48 info: ::1 - - [29/Jul/2024:10:46:48 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:16:48 info: Response status: 400 - Response time: 158.22ms
+2024-07-29 16:18:39 info: Server is running on http://localhost:3000
+2024-07-29 16:18:42 info: MongoDB connected
+2024-07-29 16:18:47 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:18:47 info: Response status: 400 - Response time: 203.68ms
+2024-07-29 16:19:02 info: Server is running on http://localhost:3000
+2024-07-29 16:19:04 info: Server is running on http://localhost:3000
+2024-07-29 16:19:07 info: MongoDB connected
+2024-07-29 16:19:08 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:19:08 info: Response status: 400 - Response time: 117.84ms
+2024-07-29 16:19:29 info: Server is running on http://localhost:3000
+2024-07-29 16:19:33 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"shubhgupta2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991342","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-29 16:19:33 info: MongoDB connected
+2024-07-29 16:19:35 info: ::1 - - [29/Jul/2024:10:49:35 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-29 16:19:35 info: Response status: 400 - Response time: 2371.08ms
