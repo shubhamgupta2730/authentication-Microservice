@@ -11,13 +11,12 @@ import { resetPassword } from '../controllers/resetPasswordController';
 import { changePassword } from '../controllers/changePasswordController';
 import { viewProfile } from '../controllers/viewProfileController';
 import { updateProfile } from '../controllers/updateProfileController';
-
 const router = Router();
 
 router.post('/signup', signup);
 router.post('/verify-otp', verifyOTPController);
 router.post('/sign-in', signIn);
-router.post('/update-auth-method', updateAuthenticationMethod);
+router.post('/update-auth-method', authMiddleware, updateAuthenticationMethod);
 router.put('/update-phone-number', authMiddleware, updatePhoneNumber);
 router.put('/update-email', authMiddleware, updateEmail);
 router.post('/forgot-password', forgotPassword);
