@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import { generateEmailOTP } from '../../../services/otpService';
 
@@ -14,14 +14,19 @@ export const updateEmail = async (req: Request, res: Response) => {
   if (!email) {
     return res.status(400).json({ message: 'Email is required.' });
   }
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Invalid email format.' });
+  }
 
   try {
-    const user = await Auth.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return res.status(404).json({ message: 'otp record not found.' });
     }

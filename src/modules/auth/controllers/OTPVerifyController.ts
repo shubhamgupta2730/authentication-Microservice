@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import { generateToken } from '../../../utils/generateToken';
 import {
@@ -9,63 +9,68 @@ import {
 } from '../../../services/otpService';
 
 export const verifyOTPController = async (req: Request, res: Response) => {
-  const { userId, otp, emailOtp, phoneOtp } = req.body;
+  const { id, otp, authMethod } = req.body;
 
-  if (!userId) {
+  // Validate id
+  if (!id) {
     return res.status(400).json({
-      message: 'Enter all the fields.',
+      message: 'Id is required for OTP verification.',
+    });
+  }
+
+  // Validate otp
+  if (!otp) {
+    return res.status(400).json({
+      message: 'OTP is required for verification.',
+    });
+  }
+
+  // Validate authMethod
+  const validAuthMethods = ['email', 'phone', 'authenticator'];
+  if (!authMethod || !validAuthMethods.includes(authMethod)) {
+    return res.status(400).json({
+      message:
+        'Valid authMethod is required for OTP verification. Valid options are: email, phone, authenticator.',
     });
   }
 
   try {
-    const user = await Auth.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-
-    const otpRecord = await Otp.findOne({ authId: userId });
+    const otpRecord = await Otp.findById(id);
     if (!otpRecord) {
       return res.status(404).json({ message: 'OTP record not found.' });
     }
 
+    const userId = otpRecord.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
     let isVerified = false;
     let message = '';
-    let type: string | undefined = '';
     let token: string | undefined;
 
-    if (emailOtp) {
-      isVerified = await verifyEmailOTP(user.email, emailOtp);
-      message = 'Email OTP';
-      type = 'email';
-    } else if (phoneOtp) {
-      isVerified = await verifyPhoneOTP(user.phone, phoneOtp);
-      message = 'Phone OTP';
-      type = 'phone';
-    } else {
-      type = user.twoFactorMethod;
-      switch (type) {
-        case 'email':
-          isVerified = await verifyEmailOTP(user.email, otp);
-          message = 'Email OTP';
-          break;
-        case 'phone':
-          isVerified = await verifyPhoneOTP(user.phone, otp);
-          message = 'Phone OTP';
-          break;
-        case 'authenticator':
-          if (!otpRecord.twoFactorSecret) {
-            return res.status(400).json({
-              message: 'User does not have an authenticator secret set up.',
-            });
-          }
-          isVerified = verifyAuthenticatorOTP(otp, otpRecord.twoFactorSecret);
-          message = 'Authenticator App OTP';
-          break;
-        default:
-          return res
-            .status(400)
-            .json({ message: 'Invalid OTP verification type.' });
-      }
+    switch (authMethod) {
+      case 'email':
+        isVerified = await verifyEmailOTP(user.email, otp);
+        message = 'Email OTP';
+        break;
+      case 'phone':
+        isVerified = await verifyPhoneOTP(user.phone, otp);
+        message = 'Phone OTP';
+        break;
+      case 'authenticator':
+        if (!otpRecord.twoFactorSecret) {
+          return res.status(400).json({
+            message: 'User does not have an authenticator secret set up.',
+          });
+        }
+        isVerified = verifyAuthenticatorOTP(otp, otpRecord.twoFactorSecret);
+        message = 'Authenticator App OTP';
+        break;
+      default:
+        return res.status(400).json({ message: 'Invalid auth method.' });
     }
 
     if (!isVerified) {
@@ -75,11 +80,11 @@ export const verifyOTPController = async (req: Request, res: Response) => {
     }
 
     // Remove OTP from database based on verification type
-    if (type === 'email') {
+    if (authMethod === 'email') {
       otpRecord.emailOtp = undefined;
       otpRecord.emailOtpExpires = undefined;
       user.isEmailVerified = true;
-    } else if (type === 'phone') {
+    } else if (authMethod === 'phone') {
       otpRecord.phoneOtp = undefined;
       otpRecord.phoneOtpExpires = undefined;
       user.isPhoneVerified = true;
@@ -88,7 +93,7 @@ export const verifyOTPController = async (req: Request, res: Response) => {
     await otpRecord.save();
     await user.save();
 
-    token = generateToken(userId);
+    token = generateToken(userId.toString(), user.role);
 
     res
       .status(200)

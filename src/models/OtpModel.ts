@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 
 export interface IOtp extends Document {
-  authId: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
   emailOtp?: string;
   emailOtpExpires?: Date;
   phoneOtp?: string;
@@ -10,6 +10,7 @@ export interface IOtp extends Document {
   authenticatorSecret?: string;
   resetToken?: string;
   resetTokenExpires?: Date;
+  tempCountryCode?: string;
   tempMail?: string;
   tempPhone?: string;
   isTempMailVerified: boolean;
@@ -18,9 +19,9 @@ export interface IOtp extends Document {
 
 const OtpSchema: Schema<IOtp> = new Schema(
   {
-    authId: {
+    userId: {
       type: Schema.Types.ObjectId,
-      ref: 'Auth',
+      ref: 'User',
       required: true,
     },
     emailOtp: {
@@ -52,6 +53,9 @@ const OtpSchema: Schema<IOtp> = new Schema(
       type: String,
     },
     tempPhone: {
+      type: String,
+    },
+    tempCountryCode: {
       type: String,
     },
     isTempMailVerified: {

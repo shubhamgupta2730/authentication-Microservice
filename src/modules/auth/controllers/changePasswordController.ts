@@ -1,24 +1,18 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 
 export const changePassword = async (req: Request, res: Response) => {
-  const { currentPassword, newPassword, verifyNewPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
   const userId = (req as any).userId;
-  if (!currentPassword || !newPassword || !verifyNewPassword) {
+  if (!currentPassword || !newPassword) {
     return res.status(400).json({
       message: ' current password, and new password are required.',
     });
   }
 
-  if (newPassword !== verifyNewPassword) {
-    return res.status(400).json({
-      message: 'new password and verify new password does not match.',
-    });
-  }
-
   try {
-    const user = await Auth.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }

@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { otpauthURL } from 'speakeasy';
 
 export const resetPassword = async (req: Request, res: Response) => {
   const { token } = req.query;
@@ -32,9 +31,9 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const user = await Auth.findOne({ _id: otpRecord.authId });
+    const user = await User.findOne({ _id: otpRecord.userId });
     if (!user) {
-      return res.status(400).json({ message: 'auth record not found' });
+      return res.status(400).json({ message: 'user record not found' });
     }
 
     user.password = hashedPassword;

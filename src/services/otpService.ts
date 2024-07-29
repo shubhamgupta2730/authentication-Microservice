@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import speakeasy from 'speakeasy';
 import { totp } from 'speakeasy';
-import Auth from '../models/AuthModel';
+import User from '../models/userModel';
 import Otp from '../models/OtpModel';
 
 const twilioClient = twilio(
@@ -72,14 +72,14 @@ export const generatePhoneOTP = async (
 ): Promise<string> => {
   const otp = generateOTP(6);
 
-    const formattedPhone = `${countryCode}${to}`;
+  //  const formattedPhone = `${countryCode}${to}`;
 
   try {
-    await twilioClient.messages.create({
-      body: `Your OTP for phone verification is ${otp}`,
-      to: formattedPhone,
-      from: process.env.TWILIO_PHONE_NUMBER || '',
-    });
+    // await twilioClient.messages.create({
+    //   body: `Your OTP for phone verification is ${otp}`,
+    //   to: formattedPhone,
+    //   from: process.env.TWILIO_PHONE_NUMBER || '',
+    // });
 
     return otp;
   } catch (error) {
@@ -104,11 +104,11 @@ export const verifyEmailOTP = async (
   otp: string
 ): Promise<boolean> => {
   try {
-    const user = await Auth.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return false;
     }
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return false;
     }
@@ -143,12 +143,12 @@ export const verifyPhoneOTP = async (
   otp: string
 ): Promise<boolean> => {
   try {
-    const user = await Auth.findOne({ phone });
+    const user = await User.findOne({ phone });
     if (!user) {
       return false;
     }
 
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return false;
     }
@@ -159,9 +159,15 @@ export const verifyPhoneOTP = async (
 
     user.isPhoneVerified = true;
     otpRecord.isTempPhoneVerified = true;
-    if (otpRecord.tempPhone && otpRecord.isTempPhoneVerified) {
+    if (
+      otpRecord.tempPhone &&
+      otpRecord.isTempPhoneVerified &&
+      otpRecord.tempCountryCode
+    ) {
       user.phone = otpRecord.tempPhone;
+      user.countryCode = otpRecord.tempCountryCode;
       otpRecord.tempPhone = undefined;
+      otpRecord.tempCountryCode = undefined;
     }
     otpRecord.phoneOtp = undefined;
     await otpRecord.save();

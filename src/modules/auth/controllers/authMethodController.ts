@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
+import Otp from '../../../models/OtpModel';
 
 export const updateAuthenticationMethod = async (
   req: Request,
   res: Response
 ) => {
-  const { userId, twoFactorMethod, twoFactorEnabled } = req.body;
+  const { id, twoFactorMethod, twoFactorEnabled } = req.body;
 
   const allowedMethods = ['email', 'phone', 'authenticator'];
 
-  if (!userId || !twoFactorMethod || !twoFactorEnabled) {
+  if (!id || !twoFactorMethod || !twoFactorEnabled) {
     return res
       .status(400)
-      .json({ message: 'User ID and Two-Factor Method are required.' });
+      .json({ message: 'ID and Two-Factor Method are required.' });
   }
 
   if (!allowedMethods.includes(twoFactorMethod)) {
@@ -22,7 +23,13 @@ export const updateAuthenticationMethod = async (
   }
 
   try {
-    const user = await Auth.findById(userId);
+    const otpRecord = await Otp.findById(id);
+    if (!otpRecord) {
+      return res.status(401).json({
+        message: 'user not found',
+      });
+    }
+    const user = await User.findOne(otpRecord.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }

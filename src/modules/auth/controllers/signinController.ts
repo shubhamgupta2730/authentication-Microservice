@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
+import { generateToken } from '../../../utils/generateToken';
 import {
   generateEmailOTP,
   generatePhoneOTP,
@@ -12,19 +12,27 @@ import {
 export const signIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: 'Email and password are required.' });
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+  if (!password) {
+    return res.status(400).json({ message: 'Password is required.' });
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Invalid email format.' });
   }
 
   try {
-    const user = await Auth.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return false;
     }
@@ -57,10 +65,8 @@ export const signIn = async (req: Request, res: Response) => {
           await otpRecord.save(); // OTP valid for 10 minutes
           await user.save();
           return res.status(200).json({
-            message:
-              'Two-factor authentication required. Use email OTP to verify.',
-            method: 'email',
-            userId: user._id,
+            message: 'Two-factor authentication required. Check Email for OTP.',
+            id: otpRecord._id,
           });
 
         case 'phone':
@@ -70,10 +76,8 @@ export const signIn = async (req: Request, res: Response) => {
           await otpRecord.save();
           await user.save();
           return res.status(200).json({
-            message:
-              'Two-factor authentication required. Use phone OTP to verify.',
-            method: 'phone',
-            userId: user._id,
+            message: 'Two-factor authentication required. Check phone for OTP.',
+            id: otpRecord._id,
           });
 
         case 'authenticator':
@@ -88,7 +92,7 @@ export const signIn = async (req: Request, res: Response) => {
             message:
               'Two-factor authentication required. Use authenticator app OTP to verify.',
             method: 'authenticator',
-            userId: user._id,
+            id: otpRecord._id,
             authSecret,
           });
 
@@ -98,9 +102,7 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     // If 2FA is not enabled, generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || '', {
-      expiresIn: '1h',
-    });
+    const token = generateToken(user._id as string, user.role);
     res.status(200).json({ message: 'SignIn successful.', token });
   } catch (error) {
     console.error('Error during signIn:', error);

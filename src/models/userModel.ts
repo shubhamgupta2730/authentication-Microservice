@@ -1,18 +1,82 @@
 import { Schema, model, Document } from 'mongoose';
 
+export interface IAddress {
+  addressLine1: string;
+  addressLine2: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
 export interface IUser extends Document {
-  authId: Schema.Types.ObjectId;
+  email: string;
+  phone: string;
+  countryCode: string;
+  password: string;
   firstName: string;
   lastName: string;
   dob: Date | null;
   gender: string;
+  isActive: boolean;
+  isEmailVerified?: boolean;
+  isPhoneVerified?: boolean;
+  twoFactorEnabled?: boolean;
+  twoFactorMethod?: 'email' | 'phone' | 'authenticator';
+  role: 'user' | 'seller';
+  address: IAddress;
 }
+
+const AddressSchema: Schema<IAddress> = new Schema({
+  addressLine1: {
+    type: String,
+    required: true,
+  },
+  addressLine2: {
+    type: String,
+    required: true,
+  },
+  street: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  postalCode: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+});
 
 const UserSchema: Schema<IUser> = new Schema(
   {
-    authId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Auth',
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    countryCode: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
       required: true,
     },
     firstName: {
@@ -25,9 +89,40 @@ const UserSchema: Schema<IUser> = new Schema(
     },
     dob: {
       type: Date,
+      required: true,
     },
     gender: {
       type: String,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isPhoneVerified: {
+      type: Boolean,
+      default: false,
+    },
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    twoFactorMethod: {
+      type: String,
+      enum: ['email', 'phone', 'authenticator'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'seller'],
+      required: true,
+      default: 'user',
+    },
+    address: {
+      type: AddressSchema,
     },
   },
   {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import { generatePhoneOTP } from '../../../services/otpService';
 
@@ -11,19 +11,39 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'User ID is required.' });
   }
 
-  if (!phone || !countryCode) {
-    return res
-      .status(400)
-      .json({ message: 'Phone and country code are required.' });
+  if (!phone) {
+    return res.status(400).json({ message: 'Phone  number is  required.' });
+  }
+
+  if (!countryCode) {
+    return res.status(400).json({ message: 'Country Code is  required.' });
+  }
+
+  // Validate phone format
+  const phoneRegex = /^\d{10}$/;
+  if (!phoneRegex.test(phone)) {
+    return res.status(400).send({
+      message:
+        'Invalid phone number. It should contain only digits and be 10 characters long.',
+    });
+  }
+
+  // Validate country code format
+  const countryCodeRegex = /^\+\d+$/;
+  if (!countryCodeRegex.test(countryCode)) {
+    return res.status(400).send({
+      message:
+        'Invalid country code. It should start with a "+" and contain only digits.',
+    });
   }
 
   try {
-    const user = await Auth.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return res.status(404).json({ message: 'otp record not found.' });
     }
@@ -34,17 +54,18 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
 
     otpRecord.tempPhone = phone;
     otpRecord.isTempPhoneVerified = false;
-    user.countryCode = countryCode;
-    const otp = await generatePhoneOTP(user.countryCode, otpRecord.tempPhone);
+    otpRecord.tempCountryCode = countryCode;
+    const otp = await generatePhoneOTP(
+      otpRecord.tempCountryCode as string,
+      otpRecord.tempPhone as string
+    );
     otpRecord.phoneOtp = otp;
     otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
     await otpRecord.save();
     await user.save();
-    // await verifyPhoneOTP(phone, otp);
-
     res.status(200).json({
       message:
-        'Phone number updated Request successful.Please verify Phone number.',
+        'Phone number update Request successful.Please verify Phone number.',
     });
   } catch (error) {
     console.error('Error updating phone number:', error);

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Auth from '../../../models/AuthModel';
+import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import { sendResetPasswordLinkToMail } from '../../../services/otpService';
 import crypto from 'crypto';
@@ -15,13 +15,19 @@ export const forgotPassword = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Email is required.' });
   }
 
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Invalid email format.' });
+  }
+
   try {
-    const user = await Auth.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const otpRecord = await Otp.findOne({ authId: user._id });
+    const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return res.status(404).json({ message: 'otp records not found' });
     }
@@ -38,7 +44,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${resetToken}`;
     const mailSubject = 'Password Reset Link';
-    const mailText = `Click the following link to reset your password: ${resetLink}`;
+    const mailText = `Click the following link to reset your password for the platform: ${resetLink}`;
 
     await sendResetPasswordLinkToMail(email, mailText, mailSubject);
 
