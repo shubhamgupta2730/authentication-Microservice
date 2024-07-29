@@ -2,11 +2,15 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
+import { authenticator } from 'otplib';
 import { generateToken } from '../../../utils/generateToken';
 import {
   generateEmailOTP,
   generatePhoneOTP,
-  generateAuthenticatorSecret,
+} from '../../../services/otpService';
+import {
+  generateTotpSecret,
+  generateTotpQrcode,
 } from '../../../services/otpService';
 
 export const signIn = async (req: Request, res: Response) => {
@@ -34,7 +38,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
-      return false;
+      return res.status(404).json({ message: 'OTP record not found.' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -61,8 +65,8 @@ export const signIn = async (req: Request, res: Response) => {
         case 'email':
           otp = await generateEmailOTP(user.email);
           otpRecord.emailOtp = otp;
-          otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
-          await otpRecord.save(); // OTP valid for 10 minutes
+          otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
+          await otpRecord.save();
           await user.save();
           return res.status(200).json({
             message: 'Two-factor authentication required. Check Email for OTP.',
@@ -72,7 +76,7 @@ export const signIn = async (req: Request, res: Response) => {
         case 'phone':
           otp = await generatePhoneOTP(user.countryCode, user.phone);
           otpRecord.phoneOtp = otp;
-          otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+          otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
           await otpRecord.save();
           await user.save();
           return res.status(200).json({
@@ -81,19 +85,31 @@ export const signIn = async (req: Request, res: Response) => {
           });
 
         case 'authenticator':
-          const authSecret =
-            otpRecord.twoFactorSecret || generateAuthenticatorSecret();
-          if (!otpRecord.twoFactorSecret) {
+          let authSecret = otpRecord.twoFactorSecret;
+          let qrCodeDataUrl;
+
+          if (!authSecret) {
+            const { secret, otpauth } = generateTotpSecret(user.email);
+            authSecret = secret;
             otpRecord.twoFactorSecret = authSecret;
+            qrCodeDataUrl = await generateTotpQrcode(otpauth);
             await otpRecord.save();
             await user.save();
+          } else {
+            const otpauth = authenticator.keyuri(
+              user.email,
+              'Authenticator',
+              authSecret
+            );
+            qrCodeDataUrl = await generateTotpQrcode(otpauth);
           }
+
           return res.status(200).json({
             message:
               'Two-factor authentication required. Use authenticator app OTP to verify.',
             method: 'authenticator',
             id: otpRecord._id,
-            authSecret,
+            qrCode: qrCodeDataUrl,
           });
 
         default:

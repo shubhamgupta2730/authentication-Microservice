@@ -3,10 +3,11 @@ import User from '../../../models/userModel';
 import Otp from '../../../models/OtpModel';
 import { generateToken } from '../../../utils/generateToken';
 import {
-  verifyEmailOTP,
-  verifyPhoneOTP,
-  verifyAuthenticatorOTP,
+  generateTotpSecret,
+  generateTotpQrcode,
+  verifyTotpToken,
 } from '../../../services/otpService';
+import { verifyEmailOTP, verifyPhoneOTP } from '../../../services/otpService';
 
 export const verifyOTPController = async (req: Request, res: Response) => {
   const { id, otp, authMethod } = req.body;
@@ -19,7 +20,7 @@ export const verifyOTPController = async (req: Request, res: Response) => {
   }
 
   // Validate otp
-  if (!otp) {
+  if (!otp && authMethod !== 'authenticator') {
     return res.status(400).json({
       message: 'OTP is required for verification.',
     });
@@ -61,12 +62,22 @@ export const verifyOTPController = async (req: Request, res: Response) => {
         message = 'Phone OTP';
         break;
       case 'authenticator':
+        //    Check if the user has a TOTP secret, if not generate one
         if (!otpRecord.twoFactorSecret) {
-          return res.status(400).json({
-            message: 'User does not have an authenticator secret set up.',
+          const { secret, otpauth } = generateTotpSecret(user.email);
+          otpRecord.twoFactorSecret = secret;
+          await otpRecord.save();
+
+          const qrCodeDataUrl = await generateTotpQrcode(otpauth);
+          return res.status(200).json({
+            message: 'Authenticator QR code generated successfully',
+            qrCode: qrCodeDataUrl,
           });
         }
-        isVerified = verifyAuthenticatorOTP(otp, otpRecord.twoFactorSecret);
+
+        // Verify the TOTP token
+        isVerified = verifyTotpToken(otp, otpRecord.twoFactorSecret);
+        console.log(isVerified);
         message = 'Authenticator App OTP';
         break;
       default:

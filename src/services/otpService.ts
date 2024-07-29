@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
-import speakeasy from 'speakeasy';
 import { totp } from 'speakeasy';
 import User from '../models/userModel';
 import Otp from '../models/OtpModel';
+import { authenticator } from 'otplib';
+import qrcode from 'qrcode';
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID || '',
@@ -90,9 +91,26 @@ export const generatePhoneOTP = async (
 
 //!  Generate base32 encoded secret for authenticator app
 
-export const generateAuthenticatorSecret = (): string => {
-  const secret = speakeasy.generateSecret({ length: 20 });
-  return secret.base32;
+// export const generateAuthenticatorSecret = (): string => {
+//   const secret = speakeasy.generateSecret({ length: 20 });
+//   return secret.base32;
+// };
+
+// Generate TOTP secret and otpauth URL
+export const generateTotpSecret = (email: string) => {
+  const secret = authenticator.generateSecret();
+  const otpauth = authenticator.keyuri(email, 'Authenticator', secret);
+  return { secret, otpauth };
+};
+
+// Generate QR code for TOTP secret
+export const generateTotpQrcode = async (otpauth: string) => {
+  try {
+    const qrCodeDataUrl = await qrcode.toDataURL(otpauth);
+    return qrCodeDataUrl;
+  } catch (error) {
+    throw new Error('Error generating QR code');
+  }
 };
 
 //*--------------------Verify OTP--------------------------------------//
@@ -182,9 +200,14 @@ export const verifyPhoneOTP = async (
 
 //! Verify OTP for authenticator app
 
-export const verifyAuthenticatorOTP = (
-  otp: string,
-  secret: string
-): boolean => {
-  return totp.verify({ secret, encoding: 'base32', token: otp });
+// export const verifyAuthenticatorOTP = (
+//   otp: string,
+//   secret: string
+// ): boolean => {
+//   return totp.verify({ secret, encoding: 'base32', token: otp });
+// };
+
+// Verify TOTP token
+export const verifyTotpToken = (token: string, secret: string): boolean => {
+  return authenticator.check(token, secret);
 };
