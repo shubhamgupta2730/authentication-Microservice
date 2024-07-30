@@ -54,15 +54,37 @@ export const verifyOTPController = async (req: Request, res: Response) => {
 
     switch (authMethod) {
       case 'email':
+        // Check if OTP has expired
+        if (
+          otpRecord.emailOtpExpires &&
+          otpRecord.emailOtpExpires < new Date()
+        ) {
+          otpRecord.emailOtp = undefined;
+          otpRecord.emailOtpExpires = undefined;
+          await otpRecord.save();
+          return res.status(400).json({ message: 'Email OTP has expired.' });
+        }
+
         isVerified = await verifyEmailOTP(user.email, otp);
         message = 'Email OTP';
         break;
       case 'phone':
+        // Check if OTP has expired
+        if (
+          otpRecord.phoneOtpExpires &&
+          otpRecord.phoneOtpExpires < new Date()
+        ) {
+          otpRecord.phoneOtp = undefined;
+          otpRecord.phoneOtpExpires = undefined;
+          await otpRecord.save();
+          return res.status(400).json({ message: 'Phone OTP has expired.' });
+        }
+
         isVerified = await verifyPhoneOTP(user.phone, otp);
         message = 'Phone OTP';
         break;
       case 'authenticator':
-        //    Check if the user has a TOTP secret, if not generate one
+        // Check if the user has a TOTP secret, if not generate one
         if (!otpRecord.twoFactorSecret) {
           const { secret, otpauth } = generateTotpSecret(user.email);
           otpRecord.twoFactorSecret = secret;
@@ -77,7 +99,6 @@ export const verifyOTPController = async (req: Request, res: Response) => {
 
         // Verify the TOTP token
         isVerified = verifyTotpToken(otp, otpRecord.twoFactorSecret);
-        console.log(isVerified);
         message = 'Authenticator App OTP';
         break;
       default:

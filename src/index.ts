@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import { logger } from './logger';
-import morgan from 'morgan'
+import morgan from 'morgan';
 import requestLogger from './middlewares/requestLogger';
 import authRoutes from './modules/auth/routes/authRoute';
 
@@ -23,7 +23,6 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-
 
 // Skip logging during tests
 const skip = () => {

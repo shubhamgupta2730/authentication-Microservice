@@ -11,16 +11,6 @@ const generateResetToken = (): string => {
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
-  }
-
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: 'Invalid email format.' });
-  }
-
   try {
     const user = await User.findOne({ email });
     if (!user) {

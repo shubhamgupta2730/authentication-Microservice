@@ -7,17 +7,10 @@ export const updateEmail = async (req: Request, res: Response) => {
   const { email } = req.body;
   const userId = (req as any).userId;
 
-  if (!userId) {
-    return res.status(400).json({ message: 'User ID is required.' });
-  }
-
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
-  }
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: 'Invalid email format.' });
+  // Check if email already exists in the User collection
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'Email already exists.' });
   }
 
   try {

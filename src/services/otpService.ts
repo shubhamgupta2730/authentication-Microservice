@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
-import { totp } from 'speakeasy';
 import User from '../models/userModel';
 import Otp from '../models/OtpModel';
 import { authenticator } from 'otplib';
@@ -73,7 +72,7 @@ export const generatePhoneOTP = async (
 ): Promise<string> => {
   const otp = generateOTP(6);
 
-   const formattedPhone = `${countryCode}${to}`;
+  const formattedPhone = `${countryCode}${to}`;
 
   try {
     await twilioClient.messages.create({
@@ -199,13 +198,6 @@ export const verifyPhoneOTP = async (
 };
 
 //! Verify OTP for authenticator app
-
-// export const verifyAuthenticatorOTP = (
-//   otp: string,
-//   secret: string
-// ): boolean => {
-//   return totp.verify({ secret, encoding: 'base32', token: otp });
-// };
 
 // Verify TOTP token
 export const verifyTotpToken = (token: string, secret: string): boolean => {

@@ -15,19 +15,8 @@ import {
 
 export const signIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
-  }
-
   if (!password) {
     return res.status(400).json({ message: 'Password is required.' });
-  }
-
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: 'Invalid email format.' });
   }
 
   try {

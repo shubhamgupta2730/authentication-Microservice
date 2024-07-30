@@ -7,34 +7,10 @@ export const updatePhoneNumber = async (req: Request, res: Response) => {
   const { phone, countryCode } = req.body;
   const userId = (req as any).userId;
 
-  if (!userId) {
-    return res.status(400).json({ message: 'User ID is required.' });
-  }
-
-  if (!phone) {
-    return res.status(400).json({ message: 'Phone  number is  required.' });
-  }
-
-  if (!countryCode) {
-    return res.status(400).json({ message: 'Country Code is  required.' });
-  }
-
-  // Validate phone format
-  const phoneRegex = /^\d{10}$/;
-  if (!phoneRegex.test(phone)) {
-    return res.status(400).send({
-      message:
-        'Invalid phone number. It should contain only digits and be 10 characters long.',
-    });
-  }
-
-  // Validate country code format
-  const countryCodeRegex = /^\+\d+$/;
-  if (!countryCodeRegex.test(countryCode)) {
-    return res.status(400).send({
-      message:
-        'Invalid country code. It should start with a "+" and contain only digits.',
-    });
+  // Check if email already exists in the User collection
+  const existingUser = await User.findOne({ phone });
+  if (existingUser) {
+    return res.status(400).json({ message: 'Phone number already exists.' });
   }
 
   try {
