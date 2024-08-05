@@ -38,9 +38,17 @@ export const updateAuthenticationMethod = async (
     user.twoFactorEnabled = twoFactorEnabled;
     await user.save();
 
-    res.status(200).json({
-      message: `Authentication method updated successfully to: ${twoFactorMethod}`,
-    });
+    if(twoFactorEnabled=='true'){
+      res.status(200).json({
+        message: `Authentication method updated successfully to: ${twoFactorMethod}`,
+      });
+    }else{
+      res.status(200).json({
+        message: `Authentication Method is Disabled.`,
+      });
+    }
+
+
   } catch (error) {
     console.error('Error updating authentication method:', error);
     res.status(500).json({

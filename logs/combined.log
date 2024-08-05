@@ -206,3 +206,241 @@
 2024-07-30 19:22:37 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991341","countryCode":"+91"}
 2024-07-30 19:22:37 info: ::1 - - [30/Jul/2024:13:52:37 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 400 42 "-" "PostmanRuntime/7.40.0"
 2024-07-30 19:22:37 info: Response status: 400 - Response time: 168.18ms
+2024-07-30 21:59:50 info: Server is running on http://localhost:3000
+2024-07-30 21:59:52 info: MongoDB connected
+2024-07-30 22:07:23 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-30 22:07:23 info: ::1 - - [30/Jul/2024:16:37:23 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 58 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:07:23 info: Response status: 400 - Response time: 374.16ms
+2024-07-30 22:08:26 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"malde"}
+2024-07-30 22:08:26 info: ::1 - - [30/Jul/2024:16:38:26 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 29 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:08:26 info: Response status: 400 - Response time: 162.12ms
+2024-07-30 22:08:32 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07d-25","gender":"male"}
+2024-07-30 22:08:33 info: ::1 - - [30/Jul/2024:16:38:33 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 36 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:08:33 info: Response status: 400 - Response time: 155.44ms
+2024-07-30 22:08:42 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"S","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-30 22:08:49 info: ::1 - - [30/Jul/2024:16:38:49 +0000] "POST /api/v1/auth/signup HTTP/1.1" 201 159 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:08:49 info: Response status: 201 - Response time: 7559.41ms
+2024-07-30 22:09:22 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"111","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-30 22:09:29 info: ::1 - - [30/Jul/2024:16:39:29 +0000] "POST /api/v1/auth/signup HTTP/1.1" 201 159 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:09:29 info: Response status: 201 - Response time: 7082.96ms
+2024-07-30 22:12:22 info: Server is running on http://localhost:3000
+2024-07-30 22:12:24 info: MongoDB connected
+2024-07-30 22:12:33 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"11","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-30 22:12:33 info: ::1 - - [30/Jul/2024:16:42:33 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 114 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:12:33 info: Response status: 400 - Response time: 214.13ms
+2024-07-30 22:12:48 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"virtualshubham2730@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-07-30 22:12:55 info: ::1 - - [30/Jul/2024:16:42:55 +0000] "POST /api/v1/auth/signup HTTP/1.1" 201 159 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:12:55 info: Response status: 201 - Response time: 6954.46ms
+2024-07-30 22:14:07 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66a9180fa7f5e4c069cf0d6a","otp":"306517","authMethod":"phone"}
+2024-07-30 22:14:08 info: ::1 - - [30/Jul/2024:16:44:08 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:14:08 info: Response status: 200 - Response time: 740.59ms
+2024-07-30 22:15:21 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66a9180fa7f5e4c069cf0d6a","otp":"302291","authMethod":"email"}
+2024-07-30 22:15:22 info: ::1 - - [30/Jul/2024:16:45:22 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:15:22 info: Response status: 200 - Response time: 738.02ms
+2024-07-30 22:15:45 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"virtualshubham2730@gmail.com","password":"12345"}
+2024-07-30 22:15:45 info: ::1 - - [30/Jul/2024:16:45:45 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:15:45 info: Response status: 200 - Response time: 471.72ms
+2024-07-30 22:16:32 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"authenticator"}
+2024-07-30 22:16:33 info: ::1 - - [30/Jul/2024:16:46:33 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 74 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:16:33 info: Response status: 200 - Response time: 271.80ms
+2024-07-30 22:22:15 info: Server is running on http://localhost:3000
+2024-07-30 22:22:17 info: MongoDB connected
+2024-07-30 22:22:48 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"authenticator"}
+2024-07-30 22:22:48 info: ::1 - - [30/Jul/2024:16:52:48 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 400 62 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:22:48 info: Response status: 400 - Response time: 7.21ms
+2024-07-30 22:22:59 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"authenticator"}
+2024-07-30 22:22:59 info: ::1 - - [30/Jul/2024:16:52:59 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 400 62 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:22:59 info: Response status: 400 - Response time: 3.08ms
+2024-07-30 22:23:21 info: Server is running on http://localhost:3000
+2024-07-30 22:23:22 info: MongoDB connected
+2024-07-30 22:23:23 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"authenticator"}
+2024-07-30 22:23:24 info: ::1 - - [30/Jul/2024:16:53:24 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 121 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:23:24 info: Response status: 200 - Response time: 537.04ms
+2024-07-30 22:23:42 info: Server is running on http://localhost:3000
+2024-07-30 22:23:43 info: MongoDB connected
+2024-07-30 22:23:48 info: Server is running on http://localhost:3000
+2024-07-30 22:23:49 info: MongoDB connected
+2024-07-30 22:23:52 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"authenticator"}
+2024-07-30 22:23:52 info: ::1 - - [30/Jul/2024:16:53:52 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 83 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:23:52 info: Response status: 200 - Response time: 296.90ms
+2024-07-30 22:23:58 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"email"}
+2024-07-30 22:23:58 info: ::1 - - [30/Jul/2024:16:53:58 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 75 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:23:58 info: Response status: 200 - Response time: 258.30ms
+2024-07-30 22:24:04 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"phone"}
+2024-07-30 22:24:04 info: ::1 - - [30/Jul/2024:16:54:04 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 75 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:24:04 info: Response status: 200 - Response time: 248.07ms
+2024-07-30 22:24:12 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"phone"}
+2024-07-30 22:24:12 info: ::1 - - [30/Jul/2024:16:54:12 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 75 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:24:12 info: Response status: 200 - Response time: 270.33ms
+2024-07-30 22:24:26 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"dfaf","twoFactorMethod":"phone"}
+2024-07-30 22:24:26 info: ::1 - - [30/Jul/2024:16:54:26 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 500 101 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:24:26 info: Response status: 500 - Response time: 214.54ms
+2024-07-30 22:24:36 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"phone"}
+2024-07-30 22:24:36 info: ::1 - - [30/Jul/2024:16:54:36 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 75 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:24:36 info: Response status: 200 - Response time: 256.40ms
+2024-07-30 22:26:33 info: Server is running on http://localhost:3000
+2024-07-30 22:26:35 info: MongoDB connected
+2024-07-30 22:26:37 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"phone"}
+2024-07-30 22:26:37 info: ::1 - - [30/Jul/2024:16:56:37 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 400 62 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:26:37 info: Response status: 400 - Response time: 9.21ms
+2024-07-30 22:27:28 info: Server is running on http://localhost:3000
+2024-07-30 22:27:29 info: MongoDB connected
+2024-07-30 22:27:40 info: Server is running on http://localhost:3000
+2024-07-30 22:27:41 info: MongoDB connected
+2024-07-30 22:27:45 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"phone"}
+2024-07-30 22:27:45 info: ::1 - - [30/Jul/2024:16:57:45 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 113 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:27:45 info: Response status: 200 - Response time: 274.36ms
+2024-07-30 22:27:54 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"phone"}
+2024-07-30 22:27:54 info: ::1 - - [30/Jul/2024:16:57:54 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 113 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:27:54 info: Response status: 200 - Response time: 279.58ms
+2024-07-30 22:28:27 info: Server is running on http://localhost:3000
+2024-07-30 22:28:30 info: Server is running on http://localhost:3000
+2024-07-30 22:28:31 info: MongoDB connected
+2024-07-30 22:28:42 info: Server is running on http://localhost:3000
+2024-07-30 22:28:43 info: MongoDB connected
+2024-07-30 22:28:51 info: Server is running on http://localhost:3000
+2024-07-30 22:28:52 info: MongoDB connected
+2024-07-30 22:30:38 info: Server is running on http://localhost:3000
+2024-07-30 22:30:39 info: MongoDB connected
+2024-07-30 22:30:43 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"phone"}
+2024-07-30 22:30:43 info: ::1 - - [30/Jul/2024:17:00:43 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 113 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:30:43 info: Response status: 200 - Response time: 385.00ms
+2024-07-30 22:30:51 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"phone"}
+2024-07-30 22:30:52 info: ::1 - - [30/Jul/2024:17:00:52 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 95 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:30:52 info: Response status: 200 - Response time: 301.37ms
+2024-07-30 22:31:01 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"email"}
+2024-07-30 22:31:01 info: ::1 - - [30/Jul/2024:17:01:01 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 95 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:31:01 info: Response status: 200 - Response time: 577.71ms
+2024-07-30 22:31:21 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"email"}
+2024-07-30 22:31:21 info: ::1 - - [30/Jul/2024:17:01:21 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 113 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:31:21 info: Response status: 200 - Response time: 404.31ms
+2024-07-30 22:31:54 info: Server is running on http://localhost:3000
+2024-07-30 22:31:55 info: MongoDB connected
+2024-07-30 22:37:03 info: Server is running on http://localhost:3000
+2024-07-30 22:37:04 info: MongoDB connected
+2024-07-30 22:38:46 info: Server is running on http://localhost:3000
+2024-07-30 22:38:48 info: MongoDB connected
+2024-07-30 22:38:51 info: Server is running on http://localhost:3000
+2024-07-30 22:38:53 info: MongoDB connected
+2024-07-30 22:39:00 info: Server is running on http://localhost:3000
+2024-07-30 22:39:02 info: MongoDB connected
+2024-07-30 22:39:09 info: Server is running on http://localhost:3000
+2024-07-30 22:39:11 info: MongoDB connected
+2024-07-30 22:39:17 info: Server is running on http://localhost:3000
+2024-07-30 22:39:19 info: MongoDB connected
+2024-07-30 22:39:22 info: Server is running on http://localhost:3000
+2024-07-30 22:39:23 info: MongoDB connected
+2024-07-30 22:39:27 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"true","twoFactorMethod":"email"}
+2024-07-30 22:39:27 info: ::1 - - [30/Jul/2024:17:09:27 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 66 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:39:27 info: Response status: 200 - Response time: 408.97ms
+2024-07-30 22:39:35 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"false","twoFactorMethod":"email"}
+2024-07-30 22:39:35 info: ::1 - - [30/Jul/2024:17:09:35 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 200 48 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:39:35 info: Response status: 200 - Response time: 327.48ms
+2024-07-30 22:39:40 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a66c1b97fb3978f6ea18a0","twoFactorEnabled":"faleese","twoFactorMethod":"email"}
+2024-07-30 22:39:40 info: ::1 - - [30/Jul/2024:17:09:40 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 500 62 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:39:40 info: Response status: 500 - Response time: 374.95ms
+2024-07-30 22:40:02 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991yy341","countryCode":"+91"}
+2024-07-30 22:40:02 info: ::1 - - [30/Jul/2024:17:10:02 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 400 68 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:02 info: Response status: 400 - Response time: 3.69ms
+2024-07-30 22:40:09 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991341","countryCode":"+91"}
+2024-07-30 22:40:09 info: ::1 - - [30/Jul/2024:17:10:09 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 400 42 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:09 info: Response status: 400 - Response time: 100.51ms
+2024-07-30 22:40:13 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991341","countryCode":"+91gg"}
+2024-07-30 22:40:13 info: ::1 - - [30/Jul/2024:17:10:13 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 400 83 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:13 info: Response status: 400 - Response time: 2.21ms
+2024-07-30 22:40:19 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991341","countryCode":"+91"}
+2024-07-30 22:40:19 info: ::1 - - [30/Jul/2024:17:10:19 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 400 42 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:19 info: Response status: 400 - Response time: 147.14ms
+2024-07-30 22:40:26 info: Incoming request: PUT /api/v1/auth/update-email - Body: {"email":"shubhamgupta2730@gmail.com"}
+2024-07-30 22:40:26 info: ::1 - - [30/Jul/2024:17:10:26 +0000] "PUT /api/v1/auth/update-email HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:26 info: Response status: 400 - Response time: 95.59ms
+2024-07-30 22:40:30 info: Incoming request: PUT /api/v1/auth/update-email - Body: {"email":"shubhamgup   ta2730@gmail.com"}
+2024-07-30 22:40:30 info: ::1 - - [30/Jul/2024:17:10:30 +0000] "PUT /api/v1/auth/update-email HTTP/1.1" 400 35 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:40:30 info: Response status: 400 - Response time: 5.22ms
+2024-07-30 22:41:00 info: Incoming request: POST /api/v1/auth/forgot-password - Body: {"email":"shubhamgupta2730@gmail.com"}
+2024-07-30 22:41:04 info: ::1 - - [30/Jul/2024:17:11:04 +0000] "POST /api/v1/auth/forgot-password HTTP/1.1" 200 53 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:41:04 info: Response status: 200 - Response time: 4470.43ms
+2024-07-30 22:41:43 info: Incoming request: PUT /api/v1/auth/reset-password?token=8268a7f67201ac8d6f0784a15f043566ec6e104ca1f9a09b185e8b26e3914e56 - Body: {"newPassword":"123456"}
+2024-07-30 22:41:43 info: ::1 - - [30/Jul/2024:17:11:43 +0000] "PUT /api/v1/auth/reset-password?token=8268a7f67201ac8d6f0784a15f043566ec6e104ca1f9a09b185e8b26e3914e56 HTTP/1.1" 400 39 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:41:43 info: Response status: 400 - Response time: 84.38ms
+2024-07-30 22:42:01 info: Incoming request: PUT /api/v1/auth/reset-password?token=8268a7f67201ac8d6f0784a15f043569ec6e104ca1f9a09b185e8b26e3914e56 - Body: {"newPassword":"12345"}
+2024-07-30 22:42:02 info: ::1 - - [30/Jul/2024:17:12:02 +0000] "PUT /api/v1/auth/reset-password?token=8268a7f67201ac8d6f0784a15f043569ec6e104ca1f9a09b185e8b26e3914e56 HTTP/1.1" 200 40 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:42:02 info: Response status: 200 - Response time: 487.37ms
+2024-07-30 22:42:27 info: Incoming request: GET /api/v1/auth/view-profile - Body: {}
+2024-07-30 22:42:27 info: ::1 - - [30/Jul/2024:17:12:27 +0000] "GET /api/v1/auth/view-profile HTTP/1.1" 200 180 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:42:27 info: Response status: 200 - Response time: 98.53ms
+2024-07-30 22:42:39 info: Incoming request: PUT /api/v1/auth/update-profile - Body: {"firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male","address":{"addressLine1":"addressLine1","addressLine2":"addressLine2","street":"Street","city":"kota","state":"Rajasthan","postalCode":"324008","country":"India"}}
+2024-07-30 22:42:39 info: ::1 - - [30/Jul/2024:17:12:39 +0000] "PUT /api/v1/auth/update-profile HTTP/1.1" 200 297 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:42:39 info: Response status: 200 - Response time: 124.50ms
+2024-07-30 22:42:45 info: Incoming request: GET /api/v1/auth/view-profile - Body: {}
+2024-07-30 22:42:45 info: ::1 - - [30/Jul/2024:17:12:45 +0000] "GET /api/v1/auth/view-profile HTTP/1.1" 200 377 "-" "PostmanRuntime/7.40.0"
+2024-07-30 22:42:45 info: Response status: 200 - Response time: 78.26ms
+2024-07-31 10:07:06 info: Server is running on http://localhost:3000
+2024-07-31 10:07:08 info: MongoDB connected
+2024-07-31 10:07:21 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"virtualshubham2730@gmail.com","password":"12345"}
+2024-07-31 10:07:21 info: ::1 - - [31/Jul/2024:04:37:21 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.40.0"
+2024-07-31 10:07:21 info: Response status: 200 - Response time: 508.32ms
+2024-08-01 15:58:20 info: Server is running on http://localhost:3000
+2024-08-01 15:58:22 info: MongoDB connected
+2024-08-01 15:59:11 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhgupta2730@gmail.com","password":"12345"}
+2024-08-01 15:59:12 info: ::1 - - [01/Aug/2024:10:29:12 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.40.0"
+2024-08-01 15:59:12 info: Response status: 200 - Response time: 425.62ms
+2024-08-01 22:56:00 info: Server is running on http://localhost:3000
+2024-08-01 22:56:01 info: MongoDB connected
+2024-08-01 23:05:46 info: Server is running on http://localhost:3000
+2024-08-01 23:05:47 info: MongoDB connected
+2024-08-01 23:09:35 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"factfounder25@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-08-01 23:09:35 info: ::1 - - [01/Aug/2024:17:39:35 +0000] "POST /api/v1/auth/signup HTTP/1.1" 400 58 "-" "PostmanRuntime/7.40.0"
+2024-08-01 23:09:35 info: Response status: 400 - Response time: 186.35ms
+2024-08-01 23:10:20 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"factfounder25@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-08-01 23:10:26 info: ::1 - - [01/Aug/2024:17:40:26 +0000] "POST /api/v1/auth/signup HTTP/1.1" 201 159 "-" "PostmanRuntime/7.40.0"
+2024-08-01 23:10:26 info: Response status: 201 - Response time: 5923.87ms
+2024-08-01 23:10:53 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66abc88a9cfca5c794712ee1","otp":"064317","authMethod":"phone"}
+2024-08-01 23:10:54 info: ::1 - - [01/Aug/2024:17:40:54 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.40.0"
+2024-08-01 23:10:54 info: Response status: 200 - Response time: 686.13ms
+2024-08-01 23:11:30 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66abc88a9cfca5c794712ee1","otp":"072687","authMethod":"email"}
+2024-08-01 23:11:31 info: ::1 - - [01/Aug/2024:17:41:31 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.40.0"
+2024-08-01 23:11:31 info: Response status: 200 - Response time: 622.79ms
+2024-08-01 23:11:45 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"factfounder25@gmail.com","password":"12345"}
+2024-08-01 23:11:46 info: ::1 - - [01/Aug/2024:17:41:46 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.40.0"
+2024-08-01 23:11:46 info: Response status: 200 - Response time: 241.63ms
+2024-08-03 22:46:31 info: Server is running on http://localhost:3000
+2024-08-03 22:46:32 info: MongoDB connected
+2024-08-03 22:48:58 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhamgupta2730@gmail.com","password":"12345"}
+2024-08-03 22:48:58 info: ::1 - - [03/Aug/2024:17:18:58 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 4477 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:48:58 info: Response status: 200 - Response time: 299.13ms
+2024-08-03 22:49:17 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"shubhamgupta2730@gmail.com","twoFactorEnabled":"false","twoFactorMethod":"email"}
+2024-08-03 22:49:17 info: ::1 - - [03/Aug/2024:17:19:17 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 401 28 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:49:17 info: Response status: 401 - Response time: 6.86ms
+2024-08-03 22:49:46 info: Incoming request: POST /api/v1/auth/update-auth-method - Body: {"id":"66a6680873d8709ef30da418","twoFactorEnabled":"false","twoFactorMethod":"email"}
+2024-08-03 22:49:46 info: ::1 - - [03/Aug/2024:17:19:46 +0000] "POST /api/v1/auth/update-auth-method HTTP/1.1" 401 28 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:49:46 info: Response status: 401 - Response time: 3.71ms
+2024-08-03 22:50:49 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhamgupta2730@gmail.com","password":"12345"}
+2024-08-03 22:50:49 info: ::1 - - [03/Aug/2024:17:20:49 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 238 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:50:49 info: Response status: 200 - Response time: 233.06ms
+2024-08-03 22:51:12 info: Incoming request: PUT /api/v1/auth/update-phone-number - Body: {"phone":"7610991341","countryCode":"+91"}
+2024-08-03 22:51:12 info: ::1 - - [03/Aug/2024:17:21:12 +0000] "PUT /api/v1/auth/update-phone-number HTTP/1.1" 403 30 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:51:12 info: Response status: 403 - Response time: 89.03ms
+2024-08-03 22:51:18 info: Incoming request: GET /api/v1/auth/view-profile - Body: {}
+2024-08-03 22:51:18 info: ::1 - - [03/Aug/2024:17:21:18 +0000] "GET /api/v1/auth/view-profile HTTP/1.1" 403 30 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:51:18 info: Response status: 403 - Response time: 87.06ms
+2024-08-03 22:51:22 info: Incoming request: PUT /api/v1/auth/update-profile - Body: {"firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male","address":{"addressLine1":"addressLine1","addressLine2":"addressLine2","street":"Street","city":"kota","state":"Rajasthan","postalCode":"324008","country":"India"}}
+2024-08-03 22:51:22 info: ::1 - - [03/Aug/2024:17:21:22 +0000] "PUT /api/v1/auth/update-profile HTTP/1.1" 403 30 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:51:22 info: Response status: 403 - Response time: 87.93ms
+2024-08-03 22:51:40 info: Server is running on http://localhost:3000
+2024-08-03 22:51:42 info: Server is running on http://localhost:3000
+2024-08-03 22:51:43 info: MongoDB connected
+2024-08-03 22:52:49 info: Server is running on http://localhost:3000
+2024-08-03 22:52:51 info: Server is running on http://localhost:3000
+2024-08-03 22:52:52 info: MongoDB connected
+2024-08-03 22:52:56 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhamgupta2730@gmail.com","password":"12345"}
+2024-08-03 22:52:56 info: ::1 - - [03/Aug/2024:17:22:56 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 403 30 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:52:56 info: Response status: 403 - Response time: 89.26ms
+2024-08-03 22:54:38 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhgupta2730@gmail.com","password":"12345"}
+2024-08-03 22:54:38 info: ::1 - - [03/Aug/2024:17:24:38 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 403 30 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:54:38 info: Response status: 403 - Response time: 82.51ms
+2024-08-03 22:55:08 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhgupta2730@gmail.com","password":"12345"}
+2024-08-03 22:55:08 info: ::1 - - [03/Aug/2024:17:25:08 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.40.0"
+2024-08-03 22:55:08 info: Response status: 200 - Response time: 271.65ms
+2024-08-04 10:13:54 info: Server is running on http://localhost:3000
+2024-08-04 10:14:18 info: MongoDB connected

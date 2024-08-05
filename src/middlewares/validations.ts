@@ -240,6 +240,7 @@ export const validateRole = (
   next();
 };
 
+
 // Validation function for first name
 export const validateFirstName = (
   req: Request,
@@ -247,15 +248,18 @@ export const validateFirstName = (
   next: NextFunction
 ) => {
   const { firstName } = req.body;
+  const alphaRegex = /^[A-Za-z]+$/;
+
   if (
     !firstName ||
     typeof firstName !== 'string' ||
     firstName.length < 1 ||
-    firstName.length > 50
+    firstName.length > 50 ||
+    !alphaRegex.test(firstName)
   ) {
     return res.status(400).json({
       message:
-        'First name is required and must be between 1 and 50 characters.',
+        'First name is required, must be between 1 and 50 characters, and contain only alphabetic characters.',
     });
   }
   next();

@@ -25,6 +25,12 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
+    // Check if the user is blocked
+    if (user.isBlocked) {
+      res.status(403).json({ message: 'You are blocked.' });
+      return;
+    }
+
     const otpRecord = await Otp.findOne({ userId: user._id });
     if (!otpRecord) {
       return res.status(404).json({ message: 'OTP record not found.' });
