@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/generateToken';
-import User from '../models/userModel'; 
+import User from '../models/userModel';
 
 export const authMiddleware = async (
   req: Request,
@@ -22,7 +22,7 @@ export const authMiddleware = async (
     (req as any).userId = decoded.userId;
     (req as any).role = decoded.role;
 
-    // Fetch the user 
+    // Fetch the user
     const user = await User.findById(decoded.userId);
 
     if (!user) {

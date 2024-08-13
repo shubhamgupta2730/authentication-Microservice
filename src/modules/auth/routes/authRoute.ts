@@ -24,7 +24,7 @@ import {
   validateFirstName,
   validateRole,
   checkExistingUserByEmail,
-  checkExistingUserByPhone
+  checkExistingUserByPhone,
 } from '../../../middlewares/validations';
 
 router.post(

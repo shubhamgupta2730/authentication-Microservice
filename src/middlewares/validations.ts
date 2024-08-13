@@ -4,12 +4,18 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
 
 // Middleware to check for existing user by email
-export const checkExistingUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
+export const checkExistingUserByEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).send({ message: 'User with the provided email already exists.' });
+      return res
+        .status(400)
+        .send({ message: 'User with the provided email already exists.' });
     }
     next();
   } catch (error) {
@@ -19,12 +25,18 @@ export const checkExistingUserByEmail = async (req: Request, res: Response, next
 };
 
 // Middleware to check for existing user by phone
-export const checkExistingUserByPhone = async (req: Request, res: Response, next: NextFunction) => {
+export const checkExistingUserByPhone = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { phone } = req.body;
   try {
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
-      return res.status(400).send({ message: 'User with the provided phone already exists.' });
+      return res
+        .status(400)
+        .send({ message: 'User with the provided phone already exists.' });
     }
     next();
   } catch (error) {
@@ -32,7 +44,6 @@ export const checkExistingUserByPhone = async (req: Request, res: Response, next
     return res.status(500).send({ message: 'Internal server error.' });
   }
 };
-
 
 // Validation function for user ID
 export const validateUserId = (
@@ -239,7 +250,6 @@ export const validateRole = (
   }
   next();
 };
-
 
 // Validation function for first name
 export const validateFirstName = (
