@@ -538,3 +538,53 @@
 2024-08-13 09:45:17 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"shubhamgupta2730@gmail.com","password":"12345"}
 2024-08-13 09:45:18 info: ::1 - - [13/Aug/2024:04:15:18 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 238 "-" "PostmanRuntime/7.41.0"
 2024-08-13 09:45:18 info: Response status: 200 - Response time: 336.99ms
+2024-08-13 11:22:59 info: Server is running on http://localhost:3000
+2024-08-13 11:23:01 info: MongoDB connected
+2024-08-13 11:30:32 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"seller1@gmail.com","password":"12345"}
+2024-08-13 11:30:33 info: ::1 - - [13/Aug/2024:06:00:33 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.41.0"
+2024-08-13 11:30:33 info: Response status: 200 - Response time: 381.80ms
+2024-08-13 12:10:54 info: Server is running on http://localhost:3000
+2024-08-13 12:11:04 info: MongoDB connected
+2024-08-13 12:19:07 info: Incoming request: POST /api/v1/auth/signup - Body: {"email":"seller2@gmail.com","password":"12345","countryCode":"+91","phone":"7610991341","role":"seller","firstName":"Shubham","lastName":"Gupta","dob":"2002-07-25","gender":"male"}
+2024-08-13 12:19:55 info: ::1 - - [13/Aug/2024:06:49:55 +0000] "POST /api/v1/auth/signup HTTP/1.1" 201 159 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:19:55 info: Response status: 201 - Response time: 47232.91ms
+2024-08-13 12:21:27 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66bb02127640a0140421ecda","otp":"350863","authMethod":"phone"}
+2024-08-13 12:21:38 info: ::1 - - [13/Aug/2024:06:51:38 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:21:38 info: Response status: 200 - Response time: 10870.53ms
+2024-08-13 12:22:09 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66bb02127640a0140421ecda","otp":"184874","authMethod":"email"}
+2024-08-13 12:22:20 info: ::1 - - [13/Aug/2024:06:52:20 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 200 254 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:22:20 info: Response status: 200 - Response time: 10417.71ms
+2024-08-13 12:23:08 info: Incoming request: POST /api/v1/auth/verify-otp - Body: {"id":"66bb02127640a0140421ecda","otp":"184874","authMethod":"email"}
+2024-08-13 12:23:10 info: ::1 - - [13/Aug/2024:06:53:10 +0000] "POST /api/v1/auth/verify-otp HTTP/1.1" 400 47 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:23:10 info: Response status: 400 - Response time: 2150.04ms
+2024-08-13 12:23:19 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"seller2@gmail.com","password":"12345"}
+2024-08-13 12:23:21 info: ::1 - - [13/Aug/2024:06:53:21 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:23:21 info: Response status: 200 - Response time: 2132.00ms
+2024-08-13 12:56:17 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"seller2@gmail.com","password":"12345"}
+2024-08-13 12:56:19 info: ::1 - - [13/Aug/2024:07:26:19 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.41.0"
+2024-08-13 12:56:19 info: Response status: 200 - Response time: 2322.86ms
+2024-08-13 13:16:17 info: Incoming request: POST /api/v1/auth/sign-in - Body: {"email":"seller1@gmail.com","password":"12345"}
+2024-08-13 13:16:17 info: ::1 - - [13/Aug/2024:07:46:17 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 240 "-" "PostmanRuntime/7.41.0"
+2024-08-13 13:16:17 info: Response status: 200 - Response time: 400.72ms
+2024-08-13 15:49:32 info: Server is running on http://localhost:3000
+2024-08-13 15:49:34 info: MongoDB connected
+2024-08-13 21:12:27 info: Server is running on http://localhost:3000
+2024-08-13 21:12:28 info: MongoDB connected
+2024-08-14 09:07:17 info: Server is running on http://localhost:3000
+2024-08-14 09:07:53 info: MongoDB connected
+2024-08-14 12:50:43 info: Server is running on http://localhost:3000
+2024-08-14 12:50:44 info: MongoDB connected
+2024-08-14 21:40:56 info: Server is running on http://localhost:3000
+2024-08-14 21:40:57 info: MongoDB connected
+2024-08-15 10:12:21 info: Server is running on http://localhost:3000
+2024-08-15 10:12:23 info: MongoDB connected
+2024-08-16 09:26:00 info: Server is running on http://localhost:3000
+2024-08-16 09:26:02 info: MongoDB connected
+2024-08-21 09:46:33 info: Server is running on http://localhost:3000
+2024-08-21 09:46:34 info: MongoDB connected
+2024-08-22 14:14:44 info: Server is running on http://localhost:3000
+2024-08-22 14:14:45 info: MongoDB connected
+2024-08-23 14:31:41 info: Server is running on http://localhost:3000
+2024-08-23 14:31:43 info: MongoDB connected
+2024-08-25 14:23:49 info: Server is running on http://localhost:3000
+2024-08-25 14:23:51 info: MongoDB connected

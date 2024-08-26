@@ -72,14 +72,14 @@ export const generatePhoneOTP = async (
 ): Promise<string> => {
   const otp = generateOTP(6);
 
- // const formattedPhone = `${countryCode}${to}`;
+  const formattedPhone = `${countryCode}${to}`;
 
   try {
-    // await twilioClient.messages.create({
-    //   body: `Your OTP for phone verification is ${otp}`,
-    //   to: formattedPhone,
-    //   from: process.env.TWILIO_PHONE_NUMBER || '',
-    // });
+    await twilioClient.messages.create({
+      body: `Your OTP for phone verification is ${otp}`,
+      to: formattedPhone,
+      from: process.env.TWILIO_PHONE_NUMBER || '',
+    });
 
     return otp;
   } catch (error) {
