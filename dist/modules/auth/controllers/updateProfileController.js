@@ -16,21 +16,15 @@ exports.updateProfile = void 0;
 const userModel_1 = __importDefault(require("../../../models/userModel"));
 const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
-    const { firstName, lastName, dob, gender } = req.body;
+    const { firstName, lastName, dob, gender, address } = req.body;
     try {
-        const userProfile = yield userModel_1.default.findOneAndUpdate({ authId: userId }, { firstName, lastName, dob, gender }, { new: true, runValidators: true, upsert: true });
-        if (!['male', 'female', 'other'].includes(gender)) {
-            return res.status(400).send({ message: 'Invalid gender.' });
-        }
-        const dobDate = new Date(dob);
-        if (isNaN(dobDate.getTime()) || dobDate >= new Date()) {
-            return res.status(400).send({ message: 'Invalid date of birth.' });
-        }
+        const userProfile = yield userModel_1.default.findOneAndUpdate({ _id: userId }, { firstName, lastName, dob, gender, address }, { new: true, runValidators: true, upsert: true });
         const user = {
             firstName: userProfile.firstName,
             lastName: userProfile.lastName,
             dob: userProfile.dob,
             gender: userProfile.gender,
+            address: userProfile.address,
         };
         res.status(200).json({ user });
     }

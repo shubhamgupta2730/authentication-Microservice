@@ -14,25 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signIn = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
+const otplib_1 = require("otplib");
 const generateToken_1 = require("../../../utils/generateToken");
 const otpService_1 = require("../../../services/otpService");
+const otpService_2 = require("../../../services/otpService");
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    if (!email || !password) {
-        return res
-            .status(400)
-            .json({ message: 'Email and password are required.' });
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required.' });
     }
     try {
-        const user = yield AuthModel_1.default.findOne({ email });
+        const user = yield userModel_1.default.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
-        const otpRecord = yield OtpModel_1.default.findOne({ authId: user._id });
+        // Check if the user is blocked
+        if (user.isBlocked) {
+            res.status(403).json({ message: 'You are blocked.' });
+            return;
+        }
+        const otpRecord = yield OtpModel_1.default.findOne({ userId: user._id });
         if (!otpRecord) {
-            return false;
+            return res.status(404).json({ message: 'OTP record not found.' });
         }
         const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
@@ -55,37 +60,43 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 case 'email':
                     otp = yield (0, otpService_1.generateEmailOTP)(user.email);
                     otpRecord.emailOtp = otp;
-                    otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
-                    yield otpRecord.save(); // OTP valid for 10 minutes
+                    otpRecord.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
+                    yield otpRecord.save();
                     yield user.save();
                     return res.status(200).json({
-                        message: 'Two-factor authentication required. Use email OTP to verify.',
-                        method: 'email',
-                        userId: user._id,
+                        message: 'Two-factor authentication required. Check Email for OTP.',
+                        id: otpRecord._id,
                     });
                 case 'phone':
                     otp = yield (0, otpService_1.generatePhoneOTP)(user.countryCode, user.phone);
                     otpRecord.phoneOtp = otp;
-                    otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+                    otpRecord.phoneOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
                     yield otpRecord.save();
                     yield user.save();
                     return res.status(200).json({
-                        message: 'Two-factor authentication required. Use phone OTP to verify.',
-                        method: 'phone',
-                        userId: user._id,
+                        message: 'Two-factor authentication required. Check phone for OTP.',
+                        id: otpRecord._id,
                     });
                 case 'authenticator':
-                    const authSecret = otpRecord.twoFactorSecret || (0, otpService_1.generateAuthenticatorSecret)();
-                    if (!otpRecord.twoFactorSecret) {
+                    let authSecret = otpRecord.twoFactorSecret;
+                    let qrCodeDataUrl;
+                    if (!authSecret) {
+                        const { secret, otpauth } = (0, otpService_2.generateTotpSecret)(user.email);
+                        authSecret = secret;
                         otpRecord.twoFactorSecret = authSecret;
+                        qrCodeDataUrl = yield (0, otpService_2.generateTotpQrcode)(otpauth);
                         yield otpRecord.save();
                         yield user.save();
+                    }
+                    else {
+                        const otpauth = otplib_1.authenticator.keyuri(user.email, 'Authenticator', authSecret);
+                        qrCodeDataUrl = yield (0, otpService_2.generateTotpQrcode)(otpauth);
                     }
                     return res.status(200).json({
                         message: 'Two-factor authentication required. Use authenticator app OTP to verify.',
                         method: 'authenticator',
-                        userId: user._id,
-                        authSecret,
+                        id: otpRecord._id,
+                        qrCode: qrCodeDataUrl,
                     });
                 default:
                     return res.status(400).json({ message: 'Invalid 2FA method.' });

@@ -14,28 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.viewProfile = void 0;
 const userModel_1 = __importDefault(require("../../../models/userModel"));
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
 const viewProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     try {
-        const userProfile = yield userModel_1.default.findOne({ authId: userId });
+        const userProfile = yield userModel_1.default.findOne({ _id: userId });
         if (!userProfile) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
-        const authProfile = yield AuthModel_1.default.findOne({
-            _id: userProfile.authId,
-        });
-        if (!authProfile) {
             return res.status(404).json({ message: 'User not found.' });
         }
         const user = {
             firstName: userProfile.firstName,
             lastName: userProfile.lastName,
-            email: authProfile.email,
-            phone: authProfile.phone,
-            countrycode: authProfile.countryCode,
+            email: userProfile.email,
+            phone: userProfile.phone,
+            countrycode: userProfile.countryCode,
             dob: userProfile.dob,
             gender: userProfile.gender,
+            address: userProfile.address,
         };
         res.status(200).json({ user });
     }

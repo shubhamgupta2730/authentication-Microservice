@@ -14,47 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
-// import User, { IUser } from '../../../models/userModel';
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
 const otpService_1 = require("../../../services/otpService");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, countryCode, phone, role } = req.body;
+    const { email, password, countryCode, phone, role, firstName, lastName, dob, gender, } = req.body;
     try {
-        if (!email || !password || !phone || !countryCode || !role) {
-            return res.status(400).send({ message: 'All fields are required.' });
-        }
-        const existingUser = yield AuthModel_1.default.findOne({ $or: [{ email }, { phone }] });
-        if (existingUser) {
-            return res
-                .status(400)
-                .send({ message: 'Email or phone already in use.' });
-        }
-        if (!['user', 'seller'].includes(role)) {
-            return res.status(400).send({ message: 'Invalid role.' });
-        }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         // Generate OTP
         const emailOtp = yield (0, otpService_1.generateEmailOTP)(email);
         const phoneOtp = yield (0, otpService_1.generatePhoneOTP)(countryCode, phone);
-        const newAuth = new AuthModel_1.default({
+        const newUser = new userModel_1.default({
+            firstName,
+            lastName,
+            dob,
+            gender,
+            countryCode,
+            phone,
             email,
             password: hashedPassword,
-            phone,
-            countryCode,
             role,
         });
-        yield newAuth.save();
-        // const newUser: IUser = new User({
-        //   authId: newAuth._id,
-        //   firstName,
-        //   lastName,
-        //   gender,
-        //   dob,
-        // });
-        // await newUser.save();
+        yield newUser.save();
         const newOtp = new OtpModel_1.default({
-            authId: newAuth._id,
+            userId: newUser._id,
             emailOtp,
             phoneOtp,
             emailOtpExpires: new Date(Date.now() + 10 * 60 * 1000),
@@ -62,8 +45,8 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         yield newOtp.save();
         res.status(201).json({
-            userId: newAuth._id,
-            message: 'Signup request successful. Please verify the Email and Phone Number.',
+            _id: newOtp._id,
+            message: 'Signup request successful.OTP is sent to your Phone and email address. Please verify the Email and Phone Number.',
         });
     }
     catch (error) {

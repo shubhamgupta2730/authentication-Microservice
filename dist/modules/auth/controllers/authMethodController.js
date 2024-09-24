@@ -13,14 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateAuthenticationMethod = void 0;
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
+const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
 const updateAuthenticationMethod = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, twoFactorMethod, twoFactorEnabled } = req.body;
+    const { id, twoFactorMethod, twoFactorEnabled } = req.body;
     const allowedMethods = ['email', 'phone', 'authenticator'];
-    if (!userId || !twoFactorMethod || !twoFactorEnabled) {
+    if (!id || !twoFactorMethod || !twoFactorEnabled) {
         return res
             .status(400)
-            .json({ message: 'User ID and Two-Factor Method are required.' });
+            .json({ message: 'ID and Two-Factor Method are required.' });
     }
     if (!allowedMethods.includes(twoFactorMethod)) {
         return res.status(400).json({
@@ -28,16 +29,29 @@ const updateAuthenticationMethod = (req, res) => __awaiter(void 0, void 0, void 
         });
     }
     try {
-        const user = yield AuthModel_1.default.findById(userId);
+        const otpRecord = yield OtpModel_1.default.findById(id);
+        if (!otpRecord) {
+            return res.status(401).json({
+                message: 'user not found',
+            });
+        }
+        const user = yield userModel_1.default.findOne(otpRecord.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
         user.twoFactorMethod = twoFactorMethod;
         user.twoFactorEnabled = twoFactorEnabled;
         yield user.save();
-        res.status(200).json({
-            message: `Authentication method updated successfully to: ${twoFactorMethod}`,
-        });
+        if (twoFactorEnabled == 'true') {
+            res.status(200).json({
+                message: `Authentication method updated successfully to: ${twoFactorMethod}`,
+            });
+        }
+        else {
+            res.status(200).json({
+                message: `Authentication Method is Disabled.`,
+            });
+        }
     }
     catch (error) {
         console.error('Error updating authentication method:', error);

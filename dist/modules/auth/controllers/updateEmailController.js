@@ -13,24 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateEmail = void 0;
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
 const otpService_1 = require("../../../services/otpService");
 const updateEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
     const userId = req.userId;
-    if (!userId) {
-        return res.status(400).json({ message: 'User ID is required.' });
-    }
-    if (!email) {
-        return res.status(400).json({ message: 'Email is required.' });
+    // Check if email already exists in the User collection
+    const existingUser = yield userModel_1.default.findOne({ email });
+    if (existingUser) {
+        return res.status(400).json({ message: 'Email already exists.' });
     }
     try {
-        const user = yield AuthModel_1.default.findById(userId);
+        const user = yield userModel_1.default.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
-        const otpRecord = yield OtpModel_1.default.findOne({ authId: user._id });
+        const otpRecord = yield OtpModel_1.default.findOne({ userId: user._id });
         if (!otpRecord) {
             return res.status(404).json({ message: 'otp record not found.' });
         }

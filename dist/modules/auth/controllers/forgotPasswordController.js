@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.forgotPassword = void 0;
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
 const otpService_1 = require("../../../services/otpService");
 const crypto_1 = __importDefault(require("crypto"));
@@ -22,15 +22,12 @@ const generateResetToken = () => {
 };
 const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ message: 'Email is required.' });
-    }
     try {
-        const user = yield AuthModel_1.default.findOne({ email });
+        const user = yield userModel_1.default.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
-        const otpRecord = yield OtpModel_1.default.findOne({ authId: user._id });
+        const otpRecord = yield OtpModel_1.default.findOne({ userId: user._id });
         if (!otpRecord) {
             return res.status(404).json({ message: 'otp records not found' });
         }
@@ -43,9 +40,9 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         otpRecord.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
         otpRecord.save();
         yield user.save();
-        const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${resetToken}`;
+        const resetLink = `https://authentication-microservice-x2tg.onrender.com/api/v1/auth/reset-password?token=${resetToken}`;
         const mailSubject = 'Password Reset Link';
-        const mailText = `Click the following link to reset your password: ${resetLink}`;
+        const mailText = `Click the following link to reset your password for the platform: ${resetLink}`;
         yield (0, otpService_1.sendResetPasswordLinkToMail)(email, mailText, mailSubject);
         res
             .status(200)

@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const OtpSchema = new mongoose_1.Schema({
-    authId: {
+    userId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Auth',
+        ref: 'User',
         required: true,
     },
     emailOtp: {
@@ -35,6 +35,9 @@ const OtpSchema = new mongoose_1.Schema({
         type: String,
     },
     tempPhone: {
+        type: String,
+    },
+    tempCountryCode: {
         type: String,
     },
     isTempMailVerified: {

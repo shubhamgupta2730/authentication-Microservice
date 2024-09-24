@@ -14,22 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changePassword = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { currentPassword, newPassword, verifyNewPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
     const userId = req.userId;
-    if (!currentPassword || !newPassword || !verifyNewPassword) {
+    if (!currentPassword || !newPassword) {
         return res.status(400).json({
             message: ' current password, and new password are required.',
         });
     }
-    if (newPassword !== verifyNewPassword) {
-        return res.status(400).json({
-            message: 'new password and verify new password does not match.',
-        });
-    }
     try {
-        const user = yield AuthModel_1.default.findById(userId);
+        const user = yield userModel_1.default.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }

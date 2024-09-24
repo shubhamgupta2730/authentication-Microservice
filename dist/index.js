@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = __importDefault(require("./config/db"));
-const logger_1 = __importDefault(require("./logger"));
+const logger_1 = require("./logger");
 const authRoute_1 = __importDefault(require("./modules/auth/routes/authRoute"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -18,5 +18,5 @@ app.use(express_1.default.json());
 //Routes:
 app.use('/api/v1/auth', authRoute_1.default);
 app.listen(PORT, () => {
-    logger_1.default.info(`Server is running on http://localhost:${PORT}`);
+    logger_1.logger.info(`Server is running on http://localhost:${PORT}`);
 });

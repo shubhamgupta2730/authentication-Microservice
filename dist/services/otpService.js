@@ -12,13 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyAuthenticatorOTP = exports.verifyPhoneOTP = exports.verifyEmailOTP = exports.generateAuthenticatorSecret = exports.generatePhoneOTP = exports.generateEmailOTP = exports.sendResetPasswordLinkToMail = exports.generateOTP = void 0;
+exports.verifyTotpToken = exports.verifyPhoneOTP = exports.verifyEmailOTP = exports.generateTotpQrcode = exports.generateTotpSecret = exports.generatePhoneOTP = exports.generateEmailOTP = exports.sendResetPasswordLinkToMail = exports.generateOTP = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const twilio_1 = __importDefault(require("twilio"));
-const speakeasy_1 = __importDefault(require("speakeasy"));
-const speakeasy_2 = require("speakeasy");
-const AuthModel_1 = __importDefault(require("../models/AuthModel"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const OtpModel_1 = __importDefault(require("../models/OtpModel"));
+const otplib_1 = require("otplib");
+const qrcode_1 = __importDefault(require("qrcode"));
 const twilioClient = (0, twilio_1.default)(process.env.TWILIO_ACCOUNT_SID || '', process.env.TWILIO_AUTH_TOKEN || '');
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
@@ -65,13 +65,13 @@ exports.generateEmailOTP = generateEmailOTP;
 //! Generate and send OTP via phone:
 const generatePhoneOTP = (countryCode, to) => __awaiter(void 0, void 0, void 0, function* () {
     const otp = (0, exports.generateOTP)(6);
-    //  const formattedPhone = `${countryCode}${to}`;
+    const formattedPhone = `${countryCode}${to}`;
     try {
-        // await twilioClient.messages.create({
-        //   body: `Your OTP for phone verification is ${otp}`,
-        //   to: formattedPhone,
-        //   from: process.env.TWILIO_PHONE_NUMBER || '',
-        // });
+        yield twilioClient.messages.create({
+            body: `Your OTP for phone verification is ${otp}`,
+            to: formattedPhone,
+            from: process.env.TWILIO_PHONE_NUMBER || '',
+        });
         return otp;
     }
     catch (error) {
@@ -81,20 +81,37 @@ const generatePhoneOTP = (countryCode, to) => __awaiter(void 0, void 0, void 0, 
 });
 exports.generatePhoneOTP = generatePhoneOTP;
 //!  Generate base32 encoded secret for authenticator app
-const generateAuthenticatorSecret = () => {
-    const secret = speakeasy_1.default.generateSecret({ length: 20 });
-    return secret.base32;
+// export const generateAuthenticatorSecret = (): string => {
+//   const secret = speakeasy.generateSecret({ length: 20 });
+//   return secret.base32;
+// };
+// Generate TOTP secret and otpauth URL
+const generateTotpSecret = (email) => {
+    const secret = otplib_1.authenticator.generateSecret();
+    const otpauth = otplib_1.authenticator.keyuri(email, 'Authenticator', secret);
+    return { secret, otpauth };
 };
-exports.generateAuthenticatorSecret = generateAuthenticatorSecret;
+exports.generateTotpSecret = generateTotpSecret;
+// Generate QR code for TOTP secret
+const generateTotpQrcode = (otpauth) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const qrCodeDataUrl = yield qrcode_1.default.toDataURL(otpauth);
+        return qrCodeDataUrl;
+    }
+    catch (error) {
+        throw new Error('Error generating QR code');
+    }
+});
+exports.generateTotpQrcode = generateTotpQrcode;
 //*--------------------Verify OTP--------------------------------------//
 //! Verify OTP for email verification
 const verifyEmailOTP = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield AuthModel_1.default.findOne({ email });
+        const user = yield userModel_1.default.findOne({ email });
         if (!user) {
             return false;
         }
-        const otpRecord = yield OtpModel_1.default.findOne({ authId: user._id });
+        const otpRecord = yield OtpModel_1.default.findOne({ userId: user._id });
         if (!otpRecord) {
             return false;
         }
@@ -122,11 +139,11 @@ exports.verifyEmailOTP = verifyEmailOTP;
 //! Verify OTP for phone verification
 const verifyPhoneOTP = (phone, otp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield AuthModel_1.default.findOne({ phone });
+        const user = yield userModel_1.default.findOne({ phone });
         if (!user) {
             return false;
         }
-        const otpRecord = yield OtpModel_1.default.findOne({ authId: user._id });
+        const otpRecord = yield OtpModel_1.default.findOne({ userId: user._id });
         if (!otpRecord) {
             return false;
         }
@@ -135,9 +152,13 @@ const verifyPhoneOTP = (phone, otp) => __awaiter(void 0, void 0, void 0, functio
         }
         user.isPhoneVerified = true;
         otpRecord.isTempPhoneVerified = true;
-        if (otpRecord.tempPhone && otpRecord.isTempPhoneVerified) {
+        if (otpRecord.tempPhone &&
+            otpRecord.isTempPhoneVerified &&
+            otpRecord.tempCountryCode) {
             user.phone = otpRecord.tempPhone;
+            user.countryCode = otpRecord.tempCountryCode;
             otpRecord.tempPhone = undefined;
+            otpRecord.tempCountryCode = undefined;
         }
         otpRecord.phoneOtp = undefined;
         yield otpRecord.save();
@@ -151,7 +172,8 @@ const verifyPhoneOTP = (phone, otp) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.verifyPhoneOTP = verifyPhoneOTP;
 //! Verify OTP for authenticator app
-const verifyAuthenticatorOTP = (otp, secret) => {
-    return speakeasy_2.totp.verify({ secret, encoding: 'base32', token: otp });
+// Verify TOTP token
+const verifyTotpToken = (token, secret) => {
+    return otplib_1.authenticator.check(token, secret);
 };
-exports.verifyAuthenticatorOTP = verifyAuthenticatorOTP;
+exports.verifyTotpToken = verifyTotpToken;

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = void 0;
-const AuthModel_1 = __importDefault(require("../../../models/AuthModel"));
+const userModel_1 = __importDefault(require("../../../models/userModel"));
 const OtpModel_1 = __importDefault(require("../../../models/OtpModel"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -39,9 +39,9 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return res.status(400).json({ message: 'Invalid or expired token.' });
         }
         const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
-        const user = yield AuthModel_1.default.findOne({ _id: otpRecord.authId });
+        const user = yield userModel_1.default.findOne({ _id: otpRecord.userId });
         if (!user) {
-            return res.status(400).json({ message: 'auth record not found' });
+            return res.status(400).json({ message: 'user record not found' });
         }
         user.password = hashedPassword;
         otpRecord.resetToken = undefined;
