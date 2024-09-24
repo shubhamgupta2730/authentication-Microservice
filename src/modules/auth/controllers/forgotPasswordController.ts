@@ -32,7 +32,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     otpRecord.save();
     await user.save();
 
-    const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${resetToken}`;
+    const resetLink = `https://authentication-microservice-x2tg.onrender.com/api/v1/auth/reset-password?token=${resetToken}`;
     const mailSubject = 'Password Reset Link';
     const mailText = `Click the following link to reset your password for the platform: ${resetLink}`;
 
